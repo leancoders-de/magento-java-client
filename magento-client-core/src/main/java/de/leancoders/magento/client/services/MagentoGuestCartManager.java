@@ -1,8 +1,7 @@
 package de.leancoders.magento.client.services;
 
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import de.leancoders.magento.client.MagentoClient;
 import de.leancoders.magento.common.model.cart.Cart;
 import de.leancoders.magento.common.model.cart.CartItem;
@@ -46,7 +45,7 @@ public class MagentoGuestCartManager extends MagentoHttpComponent {
         return StringUtils.stripQuotation(json);
     }
 
-    public Cart getCart(String cartId) {
+    public Cart getCart(String cartId) throws JsonProcessingException {
 
         String json = getSecured(baseUri() + "/" + relativePath + "/" + cartId);
 
@@ -56,11 +55,11 @@ public class MagentoGuestCartManager extends MagentoHttpComponent {
 
         System.out.println(json);
 
-        Cart cart = JSON.parseObject(json, Cart.class);
+        final Cart cart = OBJECT_MAPPER.readValue(json, Cart.class);
         return cart;
     }
 
-    public CartTotal getCartTotal(String cartId) {
+    public CartTotal getCartTotal(String cartId) throws JsonProcessingException {
         String json = getSecured(baseUri() + "/" + relativePath + "/" + cartId + "/totals");
 
         if (!validate(json)) {
@@ -69,18 +68,18 @@ public class MagentoGuestCartManager extends MagentoHttpComponent {
 
         System.out.println(json);
 
-        CartTotal cartTotal = JSON.parseObject(json, CartTotal.class);
+        CartTotal cartTotal = OBJECT_MAPPER.readValue(json, CartTotal.class);
         return cartTotal;
     }
 
-    public CartItem addItemToCart(String cartId, CartItem item) {
+    public CartItem addItemToCart(String cartId, CartItem item) throws JsonProcessingException {
         Map<String, Map<String, Object>> request = new HashMap<>();
         Map<String, Object> cartItem = new HashMap<>();
         cartItem.put("qty", item.getQty());
         cartItem.put("sku", item.getSku());
         cartItem.put("quote_id", cartId);
         request.put("cartItem", cartItem);
-        String json = JSON.toJSONString(request, SerializerFeature.BrowserCompatible);
+        String json = OBJECT_MAPPER.writeValueAsString(request);
         json = postSecure(baseUri() + "/" + relativePath + "/" + cartId + "/items", json);
 
         if (!validate(json)) {
@@ -89,12 +88,12 @@ public class MagentoGuestCartManager extends MagentoHttpComponent {
 
         System.out.println(json);
 
-        CartItem saved = JSON.parseObject(json, CartItem.class);
+        CartItem saved = OBJECT_MAPPER.readValue(json, CartItem.class);
 
         return saved;
     }
 
-    public CartItem updateItemInCart(String cartId, CartItem item) {
+    public CartItem updateItemInCart(String cartId, CartItem item) throws JsonProcessingException {
         Map<String, Map<String, Object>> request = new HashMap<>();
         Map<String, Object> cartItem = new HashMap<>();
         cartItem.put("qty", item.getQty());
@@ -102,7 +101,7 @@ public class MagentoGuestCartManager extends MagentoHttpComponent {
         cartItem.put("quote_id", cartId);
         cartItem.put("item_id", item.getItemId());
         request.put("cartItem", cartItem);
-        String json = JSON.toJSONString(request, SerializerFeature.BrowserCompatible);
+        String json = OBJECT_MAPPER.writeValueAsString(request);
         json = putSecure(baseUri() + "/" + relativePath + "/" + cartId + "/items/" + item.getItemId(), json);
 
         if (!validate(json)) {
@@ -111,7 +110,7 @@ public class MagentoGuestCartManager extends MagentoHttpComponent {
 
         System.out.println(json);
 
-        CartItem saved = JSON.parseObject(json, CartItem.class);
+        CartItem saved = OBJECT_MAPPER.readValue(json, CartItem.class);
 
         return saved;
     }

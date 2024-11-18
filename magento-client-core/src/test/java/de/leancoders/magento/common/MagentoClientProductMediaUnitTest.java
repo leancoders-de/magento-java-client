@@ -1,11 +1,12 @@
 package de.leancoders.magento.common;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.leancoders.magento.client.MagentoClient;
+import de.leancoders.magento.client.helper.jackson.ObjectMapperFactory;
 import lombok.extern.log4j.Log4j2;
 import org.junit.Test;
-import org.slf4j.log;
-import org.slf4j.logFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,50 +19,51 @@ import java.io.InputStream;
 @Log4j2
 public class MagentoClientProductMediaUnitTest {
 
+    private static final ObjectMapper OBJECT_MAPPER = ObjectMapperFactory.createDefaultObjectMapper();
 
     @Test
-    public void test_get_product_media_list() {
+    public void test_get_product_media_list() throws JsonProcessingException {
         String productSku = "B202-SKU";
         MagentoClient client = new MagentoClient(Mediator.url);
         client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
-        log.info("media list: \r\n{}", JSON.toJSONString(client.media().getProductMediaList(productSku), SerializerFeature.PrettyFormat));
+        log.info("media list: \r\n{}", OBJECT_MAPPER.writeValueAsString(client.media().getProductMediaList(productSku)));
     }
 
     @Test
-    public void test_get_product_media_urls() {
+    public void test_get_product_media_urls() throws JsonProcessingException {
         String productSku = "B202-SKU";
         MagentoClient client = new MagentoClient(Mediator.url);
         client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
-        log.info("media absolute urls: \r\n{}", JSON.toJSONString(client.media().getProductMediaAbsoluteUrls(productSku), SerializerFeature.PrettyFormat));
-        log.info("media relative urls: \r\n{}", JSON.toJSONString(client.media().getProductMediaRelativeUrls(productSku), SerializerFeature.PrettyFormat));
+        log.info("media absolute urls: \r\n{}", OBJECT_MAPPER.writeValueAsString(client.media().getProductMediaAbsoluteUrls(productSku)));
+        log.info("media relative urls: \r\n{}", OBJECT_MAPPER.writeValueAsString(client.media().getProductMediaRelativeUrls(productSku)));
     }
 
     @Test
-    public void test_get_product_media_url() {
-        String productSku = "B202-SKU";
-        MagentoClient client = new MagentoClient(Mediator.url);
-        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
-        long entryId = 1L;
-        log.info("media absoluate url: \r\n{}", JSON.toJSONString(client.media().getProductMediaAbsoluteUrl(productSku, entryId), SerializerFeature.PrettyFormat));
-        log.info("media relative url: \r\n{}", JSON.toJSONString(client.media().getProductMediaRelativeUrl(productSku, entryId), SerializerFeature.PrettyFormat));
-    }
-
-    @Test
-    public void test_get_product_media() {
+    public void test_get_product_media_url() throws JsonProcessingException {
         String productSku = "B202-SKU";
         MagentoClient client = new MagentoClient(Mediator.url);
         client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
         long entryId = 1L;
-        log.info("media: \r\n{}", JSON.toJSONString(client.media().getProductMedia(productSku, entryId), SerializerFeature.PrettyFormat));
+        log.info("media absoluate url: \r\n{}", OBJECT_MAPPER.writeValueAsString(client.media().getProductMediaAbsoluteUrl(productSku, entryId)));
+        log.info("media relative url: \r\n{}", OBJECT_MAPPER.writeValueAsString(client.media().getProductMediaRelativeUrl(productSku, entryId)));
     }
 
     @Test
-    public void test_delete_product_media() {
+    public void test_get_product_media() throws JsonProcessingException {
+        String productSku = "B202-SKU";
+        MagentoClient client = new MagentoClient(Mediator.url);
+        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+        long entryId = 1L;
+        log.info("media: \r\n{}", OBJECT_MAPPER.writeValueAsString(client.media().getProductMedia(productSku, entryId)));
+    }
+
+    @Test
+    public void test_delete_product_media() throws JsonProcessingException {
         String productSku = "B202-SKU";
         MagentoClient client = new MagentoClient(Mediator.url);
         client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
         long entryId = 2L;
-        log.info("media deleted: \r\n{}", JSON.toJSONString(client.media().deleteProductMedia(productSku, entryId), SerializerFeature.PrettyFormat));
+        log.info("media deleted: \r\n{}", OBJECT_MAPPER.writeValueAsString(client.media().deleteProductMedia(productSku, entryId)));
     }
 
     @Test

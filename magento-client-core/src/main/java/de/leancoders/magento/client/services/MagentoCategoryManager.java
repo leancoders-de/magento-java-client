@@ -1,8 +1,8 @@
 package de.leancoders.magento.client.services;
 
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import de.leancoders.magento.client.MagentoClient;
 import de.leancoders.magento.common.model.category.Category;
 import de.leancoders.magento.common.model.category.CategoryProduct;
@@ -34,7 +34,7 @@ public class MagentoCategoryManager extends MagentoHttpComponent {
         return json.equalsIgnoreCase("true");
     }
 
-    public long addCategory(Category category) {
+    public long addCategory(Category category) throws JsonProcessingException {
         Map<String, Object> cat = new HashMap<>();
         cat.put("id", category.getId());
         cat.put("parent_id", category.getParentId());
@@ -51,7 +51,7 @@ public class MagentoCategoryManager extends MagentoHttpComponent {
         req.put("category", cat);
         String url = baseUri() + "/" + relativePath4Categories;
 
-        String body = JSON.toJSONString(req, SerializerFeature.BrowserCompatible);
+        final String body = OBJECT_MAPPER.writeValueAsString(req);
         String json = postSecure(url, body);
 
         if (!validate(json)) {
@@ -60,7 +60,7 @@ public class MagentoCategoryManager extends MagentoHttpComponent {
         return Long.parseLong(json);
     }
 
-    public boolean updateCategory(Category category) {
+    public boolean updateCategory(Category category) throws JsonProcessingException {
         Map<String, Object> cat = new HashMap<>();
         cat.put("id", category.getId());
         cat.put("parent_id", category.getParentId());
@@ -77,7 +77,7 @@ public class MagentoCategoryManager extends MagentoHttpComponent {
         req.put("category", cat);
         String url = baseUri() + "/" + relativePath4Categories + "/" + category.getId();
 
-        String body = JSON.toJSONString(req, SerializerFeature.BrowserCompatible);
+        String body = OBJECT_MAPPER.writeValueAsString(req);
         String json = postSecure(url, body);
 
         if (!validate(json)) {
@@ -86,7 +86,7 @@ public class MagentoCategoryManager extends MagentoHttpComponent {
         return json.equalsIgnoreCase("true");
     }
 
-    public Category all() {
+    public Category all() throws JsonProcessingException {
         int pageIndex = 0;
         int pageSize = 1000;
         String uri = baseUri() + "/" + relativePath4Categories
@@ -97,28 +97,28 @@ public class MagentoCategoryManager extends MagentoHttpComponent {
             return null;
         }
 
-        return JSON.parseObject(json, Category.class);
+        return OBJECT_MAPPER.readValue(json, Category.class);
     }
 
-    public Category getCategoryByIdClean(long id) {
+    public Category getCategoryByIdClean(long id) throws JsonProcessingException {
         String uri = baseUri() + "/" + relativePath4Categories + "/" + id;
         return getCategoryByUrl(uri);
     }
 
-    public Category getRootCategoryById(long id) {
+    public Category getRootCategoryById(long id) throws JsonProcessingException {
         String uri = baseUri() + "/" + relativePath4Categories + "?rootCategoryId=" + id;
         return getCategoryByUrl(uri);
     }
 
-    private Category getCategoryByUrl(String uri) {
+    private Category getCategoryByUrl(String uri) throws JsonProcessingException {
         String json = getSecured(uri);
         if (!validate(json)) {
             return null;
         }
-        return JSON.parseObject(json, Category.class);
+        return OBJECT_MAPPER.readValue(json, Category.class);
     }
 
-    public Category getCategoryByIdWithChildren(long id) {
+    public Category getCategoryByIdWithChildren(long id) throws JsonProcessingException {
         Category all = all();
         return getCategoryById(all, id);
     }
@@ -136,7 +136,7 @@ public class MagentoCategoryManager extends MagentoHttpComponent {
         return null;
     }
 
-    public List<CategoryProduct> getProductsInCategory(long id) {
+    public List<CategoryProduct> getProductsInCategory(long id) throws JsonProcessingException {
         String uri = baseUri() + "/" + relativePath4Categories + "/" + id + "/products";
         String json = getSecured(uri);
 
@@ -144,10 +144,11 @@ public class MagentoCategoryManager extends MagentoHttpComponent {
             return null;
         }
 
-        return JSON.parseArray(json, CategoryProduct.class);
+        return OBJECT_MAPPER.readValue(json, new TypeReference<>() {
+        });
     }
 
-    public boolean addProductToCategory(long categoryId, String productSku, int position) {
+    public boolean addProductToCategory(long categoryId, String productSku, int position) throws JsonProcessingException {
         String uri = baseUri() + "/" + relativePath4Categories + "/" + categoryId + "/products";
         Map<String, Object> req = new HashMap<>();
         Map<String, Object> detail = new HashMap<>();
@@ -156,7 +157,7 @@ public class MagentoCategoryManager extends MagentoHttpComponent {
         detail.put("category_id", categoryId);
         detail.put("extension_attributes", new HashMap<>());
         req.put("productLink", detail);
-        String body = JSON.toJSONString(req, SerializerFeature.BrowserCompatible);
+        String body = OBJECT_MAPPER.writeValueAsString(req);
         String json = putSecure(uri, body);
 
         return json.equals("true");

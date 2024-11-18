@@ -1,6 +1,8 @@
 package de.leancoders.magento.client.services;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import java.util.Map;
 
 
@@ -16,5 +18,5 @@ public interface HttpComponent {
 
     String get(String uri, Map<String, String> headers);
 
-    String jsonPost(String uri, Map<String, String> data);
+    String jsonPost(String uri, Map<String, String> data) throws JsonProcessingException;
 }

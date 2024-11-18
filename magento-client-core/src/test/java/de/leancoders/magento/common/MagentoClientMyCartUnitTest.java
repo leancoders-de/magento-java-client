@@ -1,121 +1,124 @@
 package de.leancoders.magento.common;
 
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.leancoders.magento.client.MagentoClient;
+import de.leancoders.magento.client.helper.jackson.ObjectMapperFactory;
 import de.leancoders.magento.common.model.cart.Cart;
 import de.leancoders.magento.common.model.cart.CartItem;
 import de.leancoders.magento.common.model.cart.CartTotal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
+import lombok.extern.log4j.Log4j2;
+import org.junit.Test;
 
 
 /**
+ *
  */
+@Log4j2
 public class MagentoClientMyCartUnitTest {
-   private static final Logger logger = LoggerFactory.getLogger(MagentoClientMyCartUnitTest.class);
 
-   @Test
-   public void test_newCart(){
-      MagentoClient client = new MagentoClient(Mediator.url);
-      String token = client.loginAsClient(Mediator.customerUsername, Mediator.customerPassword);
-      String cartId = client.myCart().newQuote();
-      Cart cart = client.myCart().getCart();
-      CartTotal cartTotal = client.myCart().getCartTotal();
+    private static final ObjectMapper OBJECT_MAPPER = ObjectMapperFactory.createDefaultObjectMapper();
 
-      logger.info("token: {}", token);
-      logger.info("cart: \r\n{}", JSON.toJSONString(cart, SerializerFeature.PrettyFormat));
-      logger.info("cartTotal: \r\n{}", JSON.toJSONString(cartTotal, SerializerFeature.PrettyFormat));
-   }
+    @Test
+    public void test_newCart() throws JsonProcessingException {
+        MagentoClient client = new MagentoClient(Mediator.url);
+        String token = client.loginAsClient(Mediator.customerUsername, Mediator.customerPassword);
+        String cartId = client.myCart().newQuote();
+        Cart cart = client.myCart().getCart();
+        CartTotal cartTotal = client.myCart().getCartTotal();
 
-   @Test
-   public void test_addItemToCart(){
-      MagentoClient client = new MagentoClient(Mediator.url);
-      client.loginAsClient(Mediator.customerUsername, Mediator.customerPassword);
-      String quoteId = client.myCart().newQuote();
+        log.info("token: {}", token);
+        log.info("cart: \r\n{}", OBJECT_MAPPER.writeValueAsString(cart));
+        log.info("cartTotal: \r\n{}", OBJECT_MAPPER.writeValueAsString(cartTotal));
+    }
 
-      CartItem item = new CartItem();
-      item.setQty(1);
-      item.setSku("product_dynamic_758");
+    @Test
+    public void test_addItemToCart() throws JsonProcessingException {
+        MagentoClient client = new MagentoClient(Mediator.url);
+        client.loginAsClient(Mediator.customerUsername, Mediator.customerPassword);
+        String quoteId = client.myCart().newQuote();
 
-      System.out.println(quoteId);
+        CartItem item = new CartItem();
+        item.setQty(1);
+        item.setSku("product_dynamic_758");
 
-      item = client.myCart().addItemToCart(quoteId, item);
+        System.out.println(quoteId);
 
-      Cart cart = client.myCart().getCart();
-      CartTotal cartTotal = client.myCart().getCartTotal();
+        item = client.myCart().addItemToCart(quoteId, item);
 
-      logger.info("cartItem: \r\n{}", JSON.toJSONString(item, SerializerFeature.PrettyFormat));
-      logger.info("cart: \r\n{}", JSON.toJSONString(cart, SerializerFeature.PrettyFormat));
-      logger.info("cartTotal: \r\n{}", JSON.toJSONString(cartTotal, SerializerFeature.PrettyFormat));
-   }
+        Cart cart = client.myCart().getCart();
+        CartTotal cartTotal = client.myCart().getCartTotal();
 
-   @Test
-   public void test_updateItemInCart(){
-      MagentoClient client = new MagentoClient(Mediator.url);
-      client.loginAsClient(Mediator.customerUsername, Mediator.customerPassword);
-      String quoteId = client.myCart().newQuote();
+        log.info("cartItem: \r\n{}", OBJECT_MAPPER.writeValueAsString(item));
+        log.info("cart: \r\n{}", OBJECT_MAPPER.writeValueAsString(cart));
+        log.info("cartTotal: \r\n{}", OBJECT_MAPPER.writeValueAsString(cartTotal));
+    }
 
-      CartItem item = new CartItem();
-      item.setQty(1);
-      item.setSku("product_dynamic_758");
+    @Test
+    public void test_updateItemInCart() throws JsonProcessingException {
+        MagentoClient client = new MagentoClient(Mediator.url);
+        client.loginAsClient(Mediator.customerUsername, Mediator.customerPassword);
+        String quoteId = client.myCart().newQuote();
 
-      item = client.myCart().addItemToCart(quoteId, item);
-      item.setQty(3);
-      item = client.myCart().updateItemInCart(quoteId, item);
+        CartItem item = new CartItem();
+        item.setQty(1);
+        item.setSku("product_dynamic_758");
 
-      Cart cart = client.myCart().getCart();
-      CartTotal cartTotal = client.myCart().getCartTotal();
+        item = client.myCart().addItemToCart(quoteId, item);
+        item.setQty(3);
+        item = client.myCart().updateItemInCart(quoteId, item);
 
-      logger.info("cartItem: \r\n{}", JSON.toJSONString(item, SerializerFeature.PrettyFormat));
-      logger.info("cart: \r\n{}", JSON.toJSONString(cart, SerializerFeature.PrettyFormat));
-      logger.info("cartTotal: \r\n{}", JSON.toJSONString(cartTotal, SerializerFeature.PrettyFormat));
-   }
+        Cart cart = client.myCart().getCart();
+        CartTotal cartTotal = client.myCart().getCartTotal();
 
-   @Test
-   public void test_deleteItemInCart(){
-      MagentoClient client = new MagentoClient(Mediator.url);
-      client.loginAsClient(Mediator.customerUsername, Mediator.customerPassword);
-      String quoteId = client.myCart().newQuote();
+        log.info("cartItem: \r\n{}", OBJECT_MAPPER.writeValueAsString(item));
+        log.info("cart: \r\n{}", OBJECT_MAPPER.writeValueAsString(cart));
+        log.info("cartTotal: \r\n{}", OBJECT_MAPPER.writeValueAsString(cartTotal));
+    }
 
-      CartItem item = new CartItem();
-      item.setQty(1);
-      item.setSku("product_dynamic_758");
+    @Test
+    public void test_deleteItemInCart() throws JsonProcessingException {
+        MagentoClient client = new MagentoClient(Mediator.url);
+        client.loginAsClient(Mediator.customerUsername, Mediator.customerPassword);
+        String quoteId = client.myCart().newQuote();
 
-      item = client.myCart().addItemToCart(quoteId, item);
-      boolean result = client.myCart().deleteItemInCart(item.getItemId());
+        CartItem item = new CartItem();
+        item.setQty(1);
+        item.setSku("product_dynamic_758");
+
+        item = client.myCart().addItemToCart(quoteId, item);
+        boolean result = client.myCart().deleteItemInCart(item.getItemId());
 
 
-      Cart cart = client.myCart().getCart();
-      CartTotal cartTotal = client.myCart().getCartTotal();
+        Cart cart = client.myCart().getCart();
+        CartTotal cartTotal = client.myCart().getCartTotal();
 
-      logger.info("result: {}", result);
-      logger.info("cart: \r\n{}", JSON.toJSONString(cart, SerializerFeature.PrettyFormat));
-      logger.info("cartTotal: \r\n{}", JSON.toJSONString(cartTotal, SerializerFeature.PrettyFormat));
-   }
+        log.info("result: {}", result);
+        log.info("cart: \r\n{}", OBJECT_MAPPER.writeValueAsString(cart));
+        log.info("cartTotal: \r\n{}", OBJECT_MAPPER.writeValueAsString(cartTotal));
+    }
 
-   @Test
-   public void test_transferGuestCartToMyCart(){
-      MagentoClient client = new MagentoClient(Mediator.url);
+    @Test
+    public void test_transferGuestCartToMyCart() throws JsonProcessingException {
+        MagentoClient client = new MagentoClient(Mediator.url);
 
-      String cartId = client.guestCart().newCart();
+        String cartId = client.guestCart().newCart();
 
-      CartItem item = new CartItem();
-      item.setQty(1);
-      item.setSku("product_dynamic_758");
+        CartItem item = new CartItem();
+        item.setQty(1);
+        item.setSku("product_dynamic_758");
 
-      item = client.guestCart().addItemToCart(cartId, item);
+        item = client.guestCart().addItemToCart(cartId, item);
 
-      client.loginAsClient(Mediator.customerUsername, Mediator.customerPassword);
-      boolean result = client.myCart().transferGuestCartToMyCart(cartId);
+        client.loginAsClient(Mediator.customerUsername, Mediator.customerPassword);
+        boolean result = client.myCart().transferGuestCartToMyCart(cartId);
 
-      Cart cart = client.myCart().getCart();
-      CartTotal cartTotal = client.myCart().getCartTotal();
+        Cart cart = client.myCart().getCart();
+        CartTotal cartTotal = client.myCart().getCartTotal();
 
-      logger.info("result: {}", result);
-      logger.info("cart: \r\n{}", JSON.toJSONString(cart, SerializerFeature.PrettyFormat));
-      logger.info("cartTotal: \r\n{}", JSON.toJSONString(cartTotal, SerializerFeature.PrettyFormat));
-   }
+        log.info("result: {}", result);
+        log.info("cart: \r\n{}", OBJECT_MAPPER.writeValueAsString(cart));
+        log.info("cartTotal: \r\n{}", OBJECT_MAPPER.writeValueAsString(cartTotal));
+    }
 }

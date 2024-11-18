@@ -1,86 +1,88 @@
 package de.leancoders.magento.common;
 
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.leancoders.magento.client.MagentoClient;
+import de.leancoders.magento.client.helper.jackson.ObjectMapperFactory;
 import de.leancoders.magento.common.model.category.Category;
 import de.leancoders.magento.common.model.category.CategoryProduct;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
+import lombok.extern.log4j.Log4j2;
+import org.junit.Test;
 
 import java.util.List;
 
 
 /**
+ *
  */
+@Log4j2
 public class MagentoClientCategoryUnitTest {
 
-   private static final Logger logger = LoggerFactory.getLogger(MagentoClientCategoryUnitTest.class);
+    private static final ObjectMapper OBJECT_MAPPER = ObjectMapperFactory.createDefaultObjectMapper();
 
-   @Test
-   public void test_get_category_by_id(){
-      long id = 15;
+    @Test
+    public void test_get_category_by_id() throws JsonProcessingException {
+        long id = 15;
 
-      MagentoClient client = new MagentoClient(Mediator.url);
-      client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
-      Category category = client.categories().getCategoryByIdClean(id);
-      logger.info("category:\r\n{}", JSON.toJSONString(category, SerializerFeature.PrettyFormat));
+        MagentoClient client = new MagentoClient(Mediator.url);
+        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+        Category category = client.categories().getCategoryByIdClean(id);
+        log.info("category:\r\n{}", OBJECT_MAPPER.writeValueAsString(category));
 
-      category = client.categories().getCategoryByIdWithChildren(id);
-      logger.info("category:\r\n{}", JSON.toJSONString(category, SerializerFeature.PrettyFormat));
-   }
+        category = client.categories().getCategoryByIdWithChildren(id);
+        log.info("category:\r\n{}", OBJECT_MAPPER.writeValueAsString(category));
+    }
 
-   @Test
-   public void test_delete_category_by_id(){
-      long id = 15;
+    @Test
+    public void test_delete_category_by_id() throws JsonProcessingException {
+        long id = 15;
 
-      MagentoClient client = new MagentoClient(Mediator.url);
-      client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
-      boolean deleted = client.categories().deleteCategory(id);
-      logger.info("category deleted: {}", deleted);
-   }
+        MagentoClient client = new MagentoClient(Mediator.url);
+        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+        boolean deleted = client.categories().deleteCategory(id);
+        log.info("category deleted: {}", deleted);
+    }
 
-   @Test
-   public void test_list_categories() {
-      MagentoClient client = new MagentoClient(Mediator.url);
-      client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+    @Test
+    public void test_list_categories() throws JsonProcessingException {
+        MagentoClient client = new MagentoClient(Mediator.url);
+        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
 
-      Category page = client.categories().all();
-      logger.info("categories: {}\r\n", JSON.toJSONString(page, SerializerFeature.PrettyFormat));
-   }
+        Category page = client.categories().all();
+        log.info("categories: {}\r\n", OBJECT_MAPPER.writeValueAsString(page));
+    }
 
-   @Test
-   public void test_list_products_in_category() {
-      long id = 15;
-      MagentoClient client = new MagentoClient(Mediator.url);
-      client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+    @Test
+    public void test_list_products_in_category() throws JsonProcessingException {
+        long id = 15;
+        MagentoClient client = new MagentoClient(Mediator.url);
+        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
 
-      List<CategoryProduct> products = client.categories().getProductsInCategory(id);
-      logger.info("products in category 15:\r\n{}", JSON.toJSONString(products, SerializerFeature.PrettyFormat));
-   }
+        List<CategoryProduct> products = client.categories().getProductsInCategory(id);
+        log.info("products in category 15:\r\n{}", OBJECT_MAPPER.writeValueAsString(products));
+    }
 
-   @Test
-   public void add_product_to_category() {
-      long categoryId = 15;
-      MagentoClient client = new MagentoClient(Mediator.url);
-      client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+    @Test
+    public void add_product_to_category() throws JsonProcessingException {
+        final long categoryId = 15;
+        final MagentoClient client = new MagentoClient(Mediator.url);
+        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
 
-      String productSku = "B202-SKU";
-      boolean added = client.categories().addProductToCategory(categoryId, productSku, 1);
-      logger.info("added ? {}", added);
-   }
+        final String productSku = "B202-SKU";
+        final boolean added = client.categories().addProductToCategory(categoryId, productSku, 1);
+        log.info("added ? {}", added);
+    }
 
-   @Test
-   public void delete_product_from_category(){
-      long categoryId = 15;
-      MagentoClient client = new MagentoClient(Mediator.url);
-      client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+    @Test
+    public void delete_product_from_category() throws JsonProcessingException {
+        final long categoryId = 15;
+        final MagentoClient client = new MagentoClient(Mediator.url);
+        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
 
-      String productSku = "B202-SKU";
-      boolean removed = client.categories().removeProductFromCategory(categoryId, productSku);
-      logger.info("removed ? {}", removed);
-   }
+        final String productSku = "B202-SKU";
+        final boolean removed = client.categories().removeProductFromCategory(categoryId, productSku);
+        log.info("removed ? {}", removed);
+    }
 
 }

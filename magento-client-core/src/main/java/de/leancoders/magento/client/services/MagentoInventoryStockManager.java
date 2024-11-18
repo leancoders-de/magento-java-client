@@ -1,8 +1,7 @@
 package de.leancoders.magento.client.services;
 
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import de.leancoders.magento.client.MagentoClient;
 import de.leancoders.magento.common.model.stock.StockItems;
 import lombok.extern.log4j.Log4j2;
@@ -36,17 +35,17 @@ public class MagentoInventoryStockManager extends MagentoHttpComponent {
         return client.baseUri();
     }
 
-    public StockItems getStockItems(String productSku) {
+    public StockItems getStockItems(String productSku) throws JsonProcessingException {
         String url = baseUri() + "/" + relativePath + "/" + productSku;
         String json = getSecured(url);
         if (!validate(json)) {
             return null;
         }
-        StockItems result = JSON.parseObject(json, StockItems.class);
+        StockItems result = OBJECT_MAPPER.readValue(json, StockItems.class);
         return result;
     }
 
-    public String saveStockItems(String productSku, StockItems si) {
+    public String saveStockItems(String productSku, StockItems si) throws JsonProcessingException {
 
         String url = baseUri() + "/rest/V1/products/" + encode(productSku) + "/stockItems/" + si.getItem_id();
         Map<String, Object> req = new HashMap<>();
@@ -83,7 +82,7 @@ public class MagentoInventoryStockManager extends MagentoHttpComponent {
         obj.put("extension_attributes", new ArrayList<String>());
 
         req.put("stockItem", obj);
-        String body = JSON.toJSONString(req, SerializerFeature.BrowserCompatible);
+        String body = OBJECT_MAPPER.writeValueAsString(req);
         String stockId = putSecure(url, body);
 
         if (!validate(stockId)) {

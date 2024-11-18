@@ -1,6 +1,7 @@
 package de.leancoders.magento.client.services;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import de.leancoders.magento.client.MagentoClient;
 import de.leancoders.magento.common.model.account.Account;
 import de.leancoders.magento.common.model.cart.Cart;
@@ -50,7 +51,7 @@ public class MagentoMyCartManager extends MagentoHttpComponent {
         return StringUtils.stripQuotation(json);
     }
 
-    public Cart getCart() {
+    public Cart getCart() throws JsonProcessingException {
 
         String json = getSecured(baseUri() + "/" + relativePath + "/" + cartId);
 
@@ -59,11 +60,11 @@ public class MagentoMyCartManager extends MagentoHttpComponent {
         }
 
 
-        Cart cart = JSON.parseObject(json, Cart.class);
+        Cart cart = OBJECT_MAPPER.readValue(json, Cart.class);
         return cart;
     }
 
-    public CartTotal getCartTotal() {
+    public CartTotal getCartTotal() throws JsonProcessingException {
         String json = getSecured(baseUri() + "/" + relativePath + "/" + cartId + "/totals");
 
         if (!validate(json)) {
@@ -71,18 +72,18 @@ public class MagentoMyCartManager extends MagentoHttpComponent {
         }
 
 
-        CartTotal cartTotal = JSON.parseObject(json, CartTotal.class);
+        CartTotal cartTotal = OBJECT_MAPPER.readValue(json, CartTotal.class);
         return cartTotal;
     }
 
-    public CartItem addItemToCart(String quoteId, CartItem item) {
+    public CartItem addItemToCart(String quoteId, CartItem item) throws JsonProcessingException {
         Map<String, Map<String, Object>> request = new HashMap<>();
         Map<String, Object> cartItem = new HashMap<>();
         cartItem.put("qty", item.getQty());
         cartItem.put("sku", item.getSku());
         cartItem.put("quote_id", quoteId);
         request.put("cartItem", cartItem);
-        String json = JSON.toJSONString(request, SerializerFeature.BrowserCompatible);
+        String json = OBJECT_MAPPER.writeValueAsString(request);
         json = postSecure(baseUri() + "/" + relativePath + "/" + cartId + "/items", json);
 
         if (!validate(json)) {
@@ -90,12 +91,12 @@ public class MagentoMyCartManager extends MagentoHttpComponent {
         }
 
 
-        CartItem saved = JSON.parseObject(json, CartItem.class);
+        CartItem saved = OBJECT_MAPPER.readValue(json, CartItem.class);
 
         return saved;
     }
 
-    public CartItem updateItemInCart(String quoteId, CartItem item) {
+    public CartItem updateItemInCart(String quoteId, CartItem item) throws JsonProcessingException {
         Map<String, Map<String, Object>> request = new HashMap<>();
         Map<String, Object> cartItem = new HashMap<>();
         cartItem.put("qty", item.getQty());
@@ -103,7 +104,7 @@ public class MagentoMyCartManager extends MagentoHttpComponent {
         cartItem.put("item_id", item.getItemId());
         cartItem.put("quote_id", quoteId);
         request.put("cartItem", cartItem);
-        String json = JSON.toJSONString(request, SerializerFeature.BrowserCompatible);
+        String json = OBJECT_MAPPER.writeValueAsString(request);
         json = putSecure(baseUri() + "/" + relativePath + "/" + cartId + "/items/" + item.getItemId(), json);
 
         if (!validate(json)) {
@@ -111,7 +112,7 @@ public class MagentoMyCartManager extends MagentoHttpComponent {
         }
 
 
-        CartItem saved = JSON.parseObject(json, CartItem.class);
+        CartItem saved = OBJECT_MAPPER.readValue(json, CartItem.class);
 
         return saved;
     }
@@ -128,7 +129,7 @@ public class MagentoMyCartManager extends MagentoHttpComponent {
         return json.equalsIgnoreCase("true");
     }
 
-    public boolean transferGuestCartToMyCart(String guestCartId) {
+    public boolean transferGuestCartToMyCart(String guestCartId) throws JsonProcessingException {
         if (customerId == -1L) {
             Account account = client.getMyAccount();
             customerId = account.getId();
@@ -137,7 +138,7 @@ public class MagentoMyCartManager extends MagentoHttpComponent {
         Map<String, Object> request = new HashMap<>();
         request.put("customerId", customerId);
         request.put("storeId", storeId);
-        String json = JSON.toJSONString(request, SerializerFeature.BrowserCompatible);
+        String json = OBJECT_MAPPER.writeValueAsString(request);
         json = putSecure(baseUri() + "/rest/V1/guest-carts/" + guestCartId, json);
 
         return validate(json);

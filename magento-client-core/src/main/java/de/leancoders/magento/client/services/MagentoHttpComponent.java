@@ -1,7 +1,9 @@
 package de.leancoders.magento.client.services;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.leancoders.magento.client.helper.jackson.ObjectMapperFactory;
 import de.leancoders.magento.client.utils.StringUtils;
@@ -87,8 +89,8 @@ public abstract class MagentoHttpComponent {
 
     protected boolean validate(String json) {
         try {
-            Map<String, Object> data = JSON.parseObject(json, new TypeReference<Map<String, Object>>() {
-            }.getType());
+            final Map<String, Object> data = OBJECT_MAPPER.readValue(json, new TypeReference<>() {
+            });
 
             if (data.containsKey("message")) {
                 log.error("query failed: {}", data.get("message"));
@@ -96,8 +98,8 @@ public abstract class MagentoHttpComponent {
                 return false;
             }
         }
-        catch (JSONException exception) {
-            return true;
+        catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
         return true;
     }

@@ -2,6 +2,7 @@ package de.leancoders.magento.client.services;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import de.leancoders.magento.client.MagentoClient;
 import de.leancoders.magento.common.model.MagentoAttributeType;
 import de.leancoders.magento.common.model.product.Product;
@@ -74,7 +75,7 @@ public class MagentoProductManager extends MagentoHttpComponent {
     }
 
 
-    public List<MagentoAttributeType> getProductAttributeTypes() {
+    public List<MagentoAttributeType> getProductAttributeTypes() throws JsonProcessingException {
         final String uri = baseUri() + PRODUCTS_V1 + "attributes/types";
 
         final String json = getSecured(uri);
@@ -83,7 +84,8 @@ public class MagentoProductManager extends MagentoHttpComponent {
             return null;
         }
 
-        return JSON.parseArray(json, MagentoAttributeType.class);
+        return OBJECT_MAPPER.readValue(json, new TypeReference<>() {
+        });
     }
 
     public boolean hasProduct(String sku) throws JsonProcessingException {
@@ -132,7 +134,7 @@ public class MagentoProductManager extends MagentoHttpComponent {
     }
 
 
-    public ProductAttributePage getProductAttributes(int pageIndex, int pageSize) {
+    public ProductAttributePage getProductAttributes(int pageIndex, int pageSize) throws JsonProcessingException {
         String uri = baseUri() + PRODUCTS_V1 + "attributes"
             + "?searchCriteria[currentPage]=" + pageIndex
             + "&searchCriteria[pageSize]=" + pageSize;

@@ -1,6 +1,7 @@
 package de.leancoders.magento.client;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import de.leancoders.magento.common.model.account.Account;
 import de.leancoders.magento.client.services.BasicHttpComponent;
@@ -69,7 +70,7 @@ public class MagentoClient extends MagentoHttpComponent implements Serializable 
         this.myCartManager = new MagentoMyCartManager(this);
     }
 
-    public Account getMyAccount() {
+    public Account getMyAccount() throws JsonProcessingException {
         if (admin) {
             log.warn("my account access api is not supported for admin rest call");
             return null;
@@ -83,25 +84,25 @@ public class MagentoClient extends MagentoHttpComponent implements Serializable 
             return null;
         }
 
-        return JSON.parseObject(json, Account.class);
+        return OBJECT_MAPPER.readValue(json, Account.class);
     }
 
-    public Map<String, Object> getAccountById(long id) {
+    public Map<String, Object> getAccountById(long id) throws JsonProcessingException {
         if (!admin) {
             log.warn("other account access api is not supported for client rest call");
             return new HashMap<>();
         }
 
-        String uri = this.baseUri + "/rest/V1/customers/" + id;
-        String json = getSecured(uri);
-        Map<String, Object> data = JSON.parseObject(json, new TypeReference<Map<String, Object>>() {
-        }.getType());
+        final String uri = this.baseUri + "/rest/V1/customers/" + id;
+        final String json = getSecured(uri);
+        final Map<String, Object> data = OBJECT_MAPPER.readValue(json, new TypeReference<>() {
+        });
         return data;
     }
 
-    public String loginAsClient(String username, String password) {
-        String uri = baseUri + "/" + relativePath4LoginAsClient;
-        Map<String, String> data = new HashMap<>();
+    public String loginAsClient(String username, String password) throws JsonProcessingException {
+        final String uri = baseUri + relativePath4LoginAsClient;
+        final Map<String, String> data = new HashMap<>();
         data.put("username", username);
         data.put("password", password);
         this.token = StringUtils.stripQuotation(httpComponent.jsonPost(uri, data));
@@ -122,8 +123,8 @@ public class MagentoClient extends MagentoHttpComponent implements Serializable 
 
     }
 
-    public String loginAsAdmin(String username, String password) {
-        String uri = baseUri + "/" + relativePath4LoginAsAdmin;
+    public String loginAsAdmin(String username, String password) throws JsonProcessingException {
+        String uri = baseUri + relativePath4LoginAsAdmin;
         Map<String, String> data = new HashMap<>();
         data.put("username", username);
         data.put("password", password);

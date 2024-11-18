@@ -1,16 +1,14 @@
 package de.leancoders.magento.client.helper.jackson;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.parser.DefaultJSONParser;
-import com.alibaba.fastjson.parser.deserializer.ObjectDeserializer;
 import de.leancoders.magento.common.model.product.MagentoAttribute;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductAttributeValueDeserializer implements ObjectDeserializer {
+public class ProductAttributeValueDeserializer {
+    /*
+
     @Override
     public <T> T deserialze(DefaultJSONParser parser, Type type, Object o) {
         Object obj = parser.parse();
@@ -66,14 +64,14 @@ public class ProductAttributeValueDeserializer implements ObjectDeserializer {
         return 0;
     }
 
-    /*
     @Override
     public void write(JSONSerializer serializer, Object object, Object fieldName, Type fieldType,
                       int features) throws IOException {
         Integer value = (Integer) object;
         String text = value + "元";
         serializer.write(text);
-    }*/
+    }
+    */
 
 
 }

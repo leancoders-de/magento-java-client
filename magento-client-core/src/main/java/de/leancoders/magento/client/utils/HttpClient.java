@@ -1,5 +1,8 @@
 package de.leancoders.magento.client.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.leancoders.magento.client.helper.jackson.ObjectMapperFactory;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
@@ -66,10 +69,12 @@ public class HttpClient implements Serializable {
 
     }
 
-    public static String jsonPost(final String url, Map<String, String> parameters) {
+    private static final ObjectMapper OBJECT_MAPPER = ObjectMapperFactory.createDefaultObjectMapper();
+
+    public static String jsonPost(final String url, Map<String, String> parameters) throws JsonProcessingException {
         CloseableHttpClient httpClient = buildClient();
         String json = "";
-        String body = JSON.toJSONString(parameters);
+        String body = OBJECT_MAPPER.writeValueAsString(parameters);
         try {
             HttpPost request = new HttpPost(url);
             StringEntity params = new StringEntity(body);

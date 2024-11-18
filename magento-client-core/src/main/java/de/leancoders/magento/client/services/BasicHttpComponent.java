@@ -1,6 +1,7 @@
 package de.leancoders.magento.client.services;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import de.leancoders.magento.client.utils.HttpClient;
 
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.Map;
 /**
  *
  */
-public abstract class BasicHttpComponent implements HttpComponent {
+public class BasicHttpComponent implements HttpComponent {
     @Override
     public String post(String url, String body, Map<String, String> headers) {
         return HttpClient.post(url, body, headers);
@@ -35,7 +36,7 @@ public abstract class BasicHttpComponent implements HttpComponent {
 
 
     @Override
-    public String jsonPost(String uri, Map<String, String> data) {
+    public String jsonPost(String uri, Map<String, String> data) throws JsonProcessingException {
         return HttpClient.jsonPost(uri, data);
     }
 }
