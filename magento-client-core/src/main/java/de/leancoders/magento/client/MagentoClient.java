@@ -15,6 +15,7 @@ import de.leancoders.magento.client.services.v1.MagentoProductManager;
 import de.leancoders.magento.client.services.v1.MagentoProductMediaManager;
 import de.leancoders.magento.client.utils.StringUtils;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
@@ -58,7 +59,7 @@ public class MagentoClient extends MagentoHttpComponent implements Serializable 
         this.myCartManager = new MagentoMyCartManager(this);
     }
 
-    public MagentoClient(String baseUri) {
+    public MagentoClient(@NonNull final String baseUri) {
         super(new BasicHttpComponent());
 
         this.baseUri = baseUri;
@@ -76,9 +77,8 @@ public class MagentoClient extends MagentoHttpComponent implements Serializable 
             return null;
         }
 
-        //"http://magento.ll/index.php/rest/V1/customers/me" -H "Authorization: Bearer asdf3hjklp5iuytre"
-        String uri = this.baseUri + "/rest/V1/customers/me";
-        String json = getSecured(uri);
+        final String uri = this.baseUri + "/rest/V1/customers/me";
+        final String json = getSecured(uri);
 
         if (!validate(json)) {
             return null;

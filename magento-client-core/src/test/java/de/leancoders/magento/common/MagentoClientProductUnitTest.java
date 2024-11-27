@@ -9,17 +9,16 @@ import de.leancoders.magento.client.model.internal.MageConfig;
 import de.leancoders.magento.client.model.internal.ProductUpdateContext;
 import de.leancoders.magento.client.services.MageClientService;
 import de.leancoders.magento.client.services.ProductClientService;
+import de.leancoders.magento.client.services.v1.MagentoProductManager;
+import de.leancoders.magento.common.model.MagentoAttributeType;
 import de.leancoders.magento.common.model.enums.EProductStatus;
 import de.leancoders.magento.common.model.enums.EProductType;
 import de.leancoders.magento.common.model.enums.EProductVisibility;
-import de.leancoders.magento.common.model.MagentoAttributeType;
 import de.leancoders.magento.common.model.product.Product;
 import de.leancoders.magento.common.model.search.ProductAttributePage;
 import de.leancoders.magento.common.model.search.ProductPage;
 import lombok.extern.log4j.Log4j2;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -35,7 +34,6 @@ public class MagentoClientProductUnitTest {
 
     @Test
     public void test_login_admin2() {
-
         final MageClientService clientService = new MageClientService(
             MageConfig.of(
                 "https://main.dev.mr-hear.leancoders.de/",
@@ -62,24 +60,27 @@ public class MagentoClientProductUnitTest {
 
     @Test
     public void test_login_admin() throws JsonProcessingException {
-        final MagentoClient client = new MagentoClient(Mediator.url);
-        final String token = client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+        final Mediator mediator = Mediator.localAdmin();
+        final MagentoClient client = new MagentoClient(mediator.getUrl());
+        final String token = client.loginAsAdmin(mediator.getUsername(), mediator.getPassword());
         log.info("my account:\r\n{}", OBJECT_MAPPER.writeValueAsString(client.getMyAccount()));
         log.info("product types:\r\n{}", OBJECT_MAPPER.writeValueAsString(client.products().listProductTypes()));
     }
 
     @Test
     public void test_login_client() throws JsonProcessingException {
-        final MagentoClient client = new MagentoClient(Mediator.url);
-        final String token = client.loginAsClient(Mediator.customerUsername, Mediator.customerPassword);
+        final Mediator mediator = Mediator.localCustomer();
+        final MagentoClient client = new MagentoClient(mediator.getUrl());
+        final String token = client.loginAsClient(mediator.getUsername(), mediator.getPassword());
         log.info("my account:\r\n{}", OBJECT_MAPPER.writeValueAsString(client.getMyAccount()));
         log.info("product types:\r\n{}", OBJECT_MAPPER.writeValueAsString(client.products().listProductTypes()));
     }
 
     @Test
     public void test_list_product() throws JsonProcessingException {
-        MagentoClient client = new MagentoClient(Mediator.url);
-        String token = client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+        final Mediator mediator = Mediator.localAdmin();
+        final MagentoClient client = new MagentoClient(mediator.getUrl());
+        final String token = client.loginAsAdmin(mediator.getUsername(), mediator.getPassword());
         log.info("account with id = 1: {}", client.getAccountById(1));
         log.info("product types: \r\n{}", OBJECT_MAPPER.writeValueAsString(client.products().listProductTypes()));
 
@@ -92,8 +93,9 @@ public class MagentoClientProductUnitTest {
 
     @Test
     public void test_get_product() throws JsonProcessingException {
-        final MagentoClient client = new MagentoClient(Mediator.url);
-        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+        final Mediator mediator = Mediator.localAdmin();
+        final MagentoClient client = new MagentoClient(mediator.getUrl());
+        client.loginAsAdmin(mediator.getUsername(), mediator.getPassword());
 
         final Product p1 = client.products().getProductBySku("B201-SKU");
         log.info("product:\r\n{}", OBJECT_MAPPER.writeValueAsString(p1));
@@ -103,19 +105,22 @@ public class MagentoClientProductUnitTest {
 
     @Test
     public void test_delete_product() throws JsonProcessingException {
-        final MagentoClient client = new MagentoClient(Mediator.url);
-        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+        final Mediator mediator = Mediator.localAdmin();
+        final MagentoClient client = new MagentoClient(mediator.getUrl());
+        client.loginAsAdmin(mediator.getUsername(), mediator.getPassword());
 
         final String sku = "B203-SKU";
-        log.info("product exists ? {}", client.products().hasProduct(sku));
+        final MagentoProductManager products = client.products();
+        log.info("product exists ? {}", (Boolean) products.hasProduct(sku));
         log.info("client.deleteProduct(sku): {}", client.products().deleteProduct(sku));
-        log.info("product exists ? {}", client.products().hasProduct(sku));
+        log.info("product exists ? {}", (Boolean) client.products().hasProduct(sku));
     }
 
     @Test
     public void test_list_product_attribute_types() throws JsonProcessingException {
-        MagentoClient client = new MagentoClient(Mediator.url);
-        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+        final Mediator mediator = Mediator.localAdmin();
+        final MagentoClient client = new MagentoClient(mediator.getUrl());
+        client.loginAsAdmin(mediator.getUsername(), mediator.getPassword());
 
         List<MagentoAttributeType> attributeTypes = client.products().getProductAttributeTypes();
         log.info("product attribute types:\r\n{}", OBJECT_MAPPER.writeValueAsString(attributeTypes));
@@ -123,8 +128,9 @@ public class MagentoClientProductUnitTest {
 
     @Test
     public void test_list_product_attributes() throws JsonProcessingException {
-        MagentoClient client = new MagentoClient(Mediator.url);
-        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+        final Mediator mediator = Mediator.localAdmin();
+        final MagentoClient client = new MagentoClient(mediator.getUrl());
+        client.loginAsAdmin(mediator.getUsername(), mediator.getPassword());
 
         ProductAttributePage page = client.products().getProductAttributes(0, 10);
         log.info("product attribute types:\r\n{}", OBJECT_MAPPER.writeValueAsString(page));
@@ -132,8 +138,9 @@ public class MagentoClientProductUnitTest {
 
     @Test
     public void test_add_product() throws JsonProcessingException {
-        final MagentoClient client = new MagentoClient(Mediator.url);
-        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+        final Mediator mediator = Mediator.localAdmin();
+        final MagentoClient client = new MagentoClient(mediator.getUrl());
+        client.loginAsAdmin(mediator.getUsername(), mediator.getPassword());
 
         final String sku = "B203-SKU";
         if (client.products().hasProduct(sku)) {
