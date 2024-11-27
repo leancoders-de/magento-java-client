@@ -17,13 +17,14 @@ import org.junit.Test;
 public class MagentoClientInventoryUnitTest {
 
     private final ObjectMapper MAPPER = ObjectMapperFactory.createDefaultObjectMapper();
+    private static final Mediator LOCAL_ADMIN = Mediator.localAdmin();
 
     @Test
     public void test_getStockItems() throws JsonProcessingException {
         String productSku = "product_dynamic_571";
 
-        MagentoClient client = new MagentoClient(Mediator.url);
-        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+        MagentoClient client = new MagentoClient(LOCAL_ADMIN.getUrl());
+        client.loginAsAdmin(LOCAL_ADMIN.getUsername(), LOCAL_ADMIN.getPassword());
 
         log.info("stock item: {}", MAPPER.writeValueAsString(client.inventory().getStockItems(productSku)));
 
@@ -35,8 +36,8 @@ public class MagentoClientInventoryUnitTest {
     public void test_saveStockItems() throws JsonProcessingException {
         String productSku = "product_dynamic_571";
 
-        MagentoClient client = new MagentoClient(Mediator.url);
-        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+        MagentoClient client = new MagentoClient(LOCAL_ADMIN.getUrl());
+        client.loginAsAdmin(LOCAL_ADMIN.getUsername(), LOCAL_ADMIN.getPassword());
 
         productSku = "B203-SKU";
         StockItems si = client.inventory().getStockItems(productSku);

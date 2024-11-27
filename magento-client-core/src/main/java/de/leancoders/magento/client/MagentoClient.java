@@ -3,7 +3,6 @@ package de.leancoders.magento.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import de.leancoders.magento.common.model.account.Account;
 import de.leancoders.magento.client.services.BasicHttpComponent;
 import de.leancoders.magento.client.services.HttpComponent;
 import de.leancoders.magento.client.services.MagentoCategoryManager;
@@ -14,7 +13,9 @@ import de.leancoders.magento.client.services.MagentoMyCartManager;
 import de.leancoders.magento.client.services.MagentoProductManager;
 import de.leancoders.magento.client.services.MagentoProductMediaManager;
 import de.leancoders.magento.client.utils.StringUtils;
+import de.leancoders.magento.common.model.account.Account;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
@@ -58,7 +59,7 @@ public class MagentoClient extends MagentoHttpComponent implements Serializable 
         this.myCartManager = new MagentoMyCartManager(this);
     }
 
-    public MagentoClient(String baseUri) {
+    public MagentoClient(@NonNull final String baseUri) {
         super(new BasicHttpComponent());
 
         this.baseUri = baseUri;
@@ -76,9 +77,8 @@ public class MagentoClient extends MagentoHttpComponent implements Serializable 
             return null;
         }
 
-        //"http://magento.ll/index.php/rest/V1/customers/me" -H "Authorization: Bearer asdf3hjklp5iuytre"
-        String uri = this.baseUri + "/rest/V1/customers/me";
-        String json = getSecured(uri);
+        final String uri = this.baseUri + "/rest/V1/customers/me";
+        final String json = getSecured(uri);
 
         if (!validate(json)) {
             return null;

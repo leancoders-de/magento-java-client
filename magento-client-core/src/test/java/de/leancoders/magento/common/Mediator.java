@@ -1,14 +1,55 @@
 package de.leancoders.magento.common;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
+
 /**
+ *
  */
+@AllArgsConstructor
+@Getter
 public class Mediator {
 
-   // public static final String url = "http://magento2.demo.ubertheme.com/";
-   public static final String url = "http://mr-hear.local/";
-   public static final String customerUsername = "roni_cost@example.com";
-   public static final String customerPassword = "roni_cost@example.com";
-   public static final String adminUsername = "admin";
-   public static final String adminPassword = "admin123";
+    private final String url;
+    private final String username;
+    private final String password;
+
+    @NonNull
+    public static Mediator localAdmin() {
+        return new Mediator(
+            "http://mr-hear.local/",
+            "admin",
+            "admin123"
+        );
+    }
+
+    @NonNull
+    public static Mediator localGuest() {
+        return new Mediator(
+            "http://mr-hear.local/",
+            "",
+            ""
+        );
+    }
+
+    @NonNull
+    public static Mediator localCustomer() {
+        return new Mediator(
+            "http://mr-hear.local/",
+            "user",
+            "user123"
+        );
+    }
+
+    @NonNull
+    public static Mediator design(@NonNull final String username,
+                                  @NonNull final String password) {
+        return new Mediator(
+            "https://design.dev.mr-hear.leancoders.de/",
+            username,
+            password
+        );
+    }
 }

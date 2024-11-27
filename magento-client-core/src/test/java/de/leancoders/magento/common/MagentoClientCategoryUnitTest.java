@@ -20,13 +20,14 @@ import java.util.List;
 public class MagentoClientCategoryUnitTest {
 
     private static final ObjectMapper OBJECT_MAPPER = ObjectMapperFactory.createDefaultObjectMapper();
+    private static final Mediator LOCAL_ADMIN = Mediator.localAdmin();
 
     @Test
     public void test_get_category_by_id() throws JsonProcessingException {
-        long id = 15;
+        final long id = 15;
 
-        MagentoClient client = new MagentoClient(Mediator.url);
-        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+        final MagentoClient client = new MagentoClient(LOCAL_ADMIN.getUrl());
+        client.loginAsAdmin(LOCAL_ADMIN.getUsername(), LOCAL_ADMIN.getPassword());
         Category category = client.categories().getCategoryByIdClean(id);
         log.info("category:\r\n{}", OBJECT_MAPPER.writeValueAsString(category));
 
@@ -36,28 +37,28 @@ public class MagentoClientCategoryUnitTest {
 
     @Test
     public void test_delete_category_by_id() throws JsonProcessingException {
-        long id = 15;
+        final long id = 15;
 
-        MagentoClient client = new MagentoClient(Mediator.url);
-        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+        final MagentoClient client = new MagentoClient(LOCAL_ADMIN.getUrl());
+        client.loginAsAdmin(LOCAL_ADMIN.getUsername(), LOCAL_ADMIN.getPassword());
         boolean deleted = client.categories().deleteCategory(id);
-        log.info("category deleted: {}", deleted);
+        log.info("category deleted: {}", (Object) deleted);
     }
 
     @Test
     public void test_list_categories() throws JsonProcessingException {
-        MagentoClient client = new MagentoClient(Mediator.url);
-        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+        final MagentoClient client = new MagentoClient(LOCAL_ADMIN.getUrl());
+        client.loginAsAdmin(LOCAL_ADMIN.getUsername(), LOCAL_ADMIN.getPassword());
 
-        Category page = client.categories().all();
+        final Category page = client.categories().all();
         log.info("categories: {}\r\n", OBJECT_MAPPER.writeValueAsString(page));
     }
 
     @Test
     public void test_list_products_in_category() throws JsonProcessingException {
         long id = 15;
-        MagentoClient client = new MagentoClient(Mediator.url);
-        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+        MagentoClient client = new MagentoClient(LOCAL_ADMIN.getUrl());
+        client.loginAsAdmin(LOCAL_ADMIN.getUsername(), LOCAL_ADMIN.getPassword());
 
         List<CategoryProduct> products = client.categories().getProductsInCategory(id);
         log.info("products in category 15:\r\n{}", OBJECT_MAPPER.writeValueAsString(products));
@@ -66,23 +67,23 @@ public class MagentoClientCategoryUnitTest {
     @Test
     public void add_product_to_category() throws JsonProcessingException {
         final long categoryId = 15;
-        final MagentoClient client = new MagentoClient(Mediator.url);
-        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+        final MagentoClient client = new MagentoClient(LOCAL_ADMIN.getUrl());
+        client.loginAsAdmin(LOCAL_ADMIN.getUsername(), LOCAL_ADMIN.getPassword());
 
         final String productSku = "B202-SKU";
         final boolean added = client.categories().addProductToCategory(categoryId, productSku, 1);
-        log.info("added ? {}", added);
+        log.info("added ? {}", (Object) added);
     }
 
     @Test
     public void delete_product_from_category() throws JsonProcessingException {
         final long categoryId = 15;
-        final MagentoClient client = new MagentoClient(Mediator.url);
-        client.loginAsAdmin(Mediator.adminUsername, Mediator.adminPassword);
+        final MagentoClient client = new MagentoClient(LOCAL_ADMIN.getUrl());
+        client.loginAsAdmin(LOCAL_ADMIN.getUsername(), LOCAL_ADMIN.getPassword());
 
         final String productSku = "B202-SKU";
         final boolean removed = client.categories().removeProductFromCategory(categoryId, productSku);
-        log.info("removed ? {}", removed);
+        log.info("removed ? {}", (Object) removed);
     }
 
 }
