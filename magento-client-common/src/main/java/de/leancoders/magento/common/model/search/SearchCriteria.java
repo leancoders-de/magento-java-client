@@ -2,6 +2,7 @@ package de.leancoders.magento.common.model.search;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,8 +12,7 @@ import java.util.List;
 /**
  *
  */
-@Setter
-@Getter
+@Data
 public class SearchCriteria {
 
     @JsonProperty("filter_groups")

@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Map;
 
 @Log4j2
 public class ProductJsonUnitTest {
@@ -26,10 +27,10 @@ public class ProductJsonUnitTest {
 
         log.info("sku: {}", product.getSku());
         for (MagentoAttribute ma : product.getCustomAttributes()) {
-            log.info("custom attribute: key = {}, value = {}", ma.getAttribute_code(), ma.getValue());
+            log.info("custom attribute: key = {}, value = {}", ma.getAttributeCode(), ma.getValue());
         }
-        for (MagentoAttribute ma : product.getExtensionAttributes()) {
-            log.info("extension attribute: key = {}, value = {}", ma.getAttribute_code(), ma.getValue());
+        for (Map.Entry<String, Object> ma : product.getExtensionAttributes().entrySet()) {
+            log.info("extension attribute: key = {}, value = {}", ma.getKey(), ma.getValue());
         }
     }
 
@@ -40,8 +41,7 @@ public class ProductJsonUnitTest {
             while ((line = reader.readLine()) != null) {
                 sb.append(line);
             }
-        }
-        catch (IOException ioex) {
+        } catch (IOException ioex) {
             log.error("Failed to read stream", ioex);
         }
         return sb.toString();

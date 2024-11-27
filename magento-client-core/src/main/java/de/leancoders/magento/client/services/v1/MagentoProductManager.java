@@ -1,9 +1,10 @@
-package de.leancoders.magento.client.services;
+package de.leancoders.magento.client.services.v1;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import de.leancoders.magento.client.MagentoClient;
+import de.leancoders.magento.client.model.internal.ProductUpdateContext;
 import de.leancoders.magento.common.model.MagentoAttributeType;
 import de.leancoders.magento.common.model.product.Product;
 import de.leancoders.magento.common.model.search.ProductAttributePage;
@@ -45,6 +46,7 @@ public class MagentoProductManager extends MagentoHttpComponent {
     }
 
 
+    @Deprecated
     @Nonnull
     public ProductPage page(final int page,
                             final int pageSize) throws JsonProcessingException {
@@ -61,7 +63,7 @@ public class MagentoProductManager extends MagentoHttpComponent {
         return OBJECT_MAPPER.readValue(response, ProductPage.class);
     }
 
-
+    @Deprecated
     @Nonnull
     public Product getProductBySku(@NonNull final String sku) throws JsonProcessingException {
         final String uri = baseUri() + PRODUCTS_V1 + encode(sku);
@@ -93,7 +95,7 @@ public class MagentoProductManager extends MagentoHttpComponent {
     }
 
     @Nonnull
-    public Product saveProduct(@NonNull final Product product) throws JsonProcessingException {
+    public ProductUpdateContext saveProduct(@NonNull final Product product) throws JsonProcessingException {
         final String sku = product.getSku();
         final String url = baseUri() + PRODUCTS_V1 + encode(sku);
 
@@ -121,7 +123,8 @@ public class MagentoProductManager extends MagentoHttpComponent {
             return null;
         }
 
-        return OBJECT_MAPPER.readValue(response, Product.class);
+        final Product productResponse = OBJECT_MAPPER.readValue(response, Product.class);
+        return ProductUpdateContext.of(productUpdateRequest, body, productResponse);
     }
 
 

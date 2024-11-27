@@ -28,6 +28,6 @@ public class ProductMedia extends MagentoBase {
     @JsonProperty("file")
     private String file;
 
-    @JsonProperty("type")
-    private List<String> types;
+    @JsonProperty("types")
+    private List<EMediaType> types;
 }

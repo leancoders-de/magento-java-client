@@ -1,25 +1,20 @@
 package de.leancoders.magento.common.model.product;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  *
  */
-@Setter
-@Getter
+@Data
 public class MagentoAttribute {
 
-    private String attribute_code = "description";
-    private Object value = "Full simple product Description 1";
+    @JsonProperty(value = "attribute_code")
+    private String attributeCode;
+    @JsonProperty(value = "value")
+    private Object value;
 
-    public MagentoAttribute() {
-
-    }
-
-    public MagentoAttribute(String attribute_code, Object value) {
-        this.attribute_code = attribute_code;
-        this.value = value;
-    }
 }

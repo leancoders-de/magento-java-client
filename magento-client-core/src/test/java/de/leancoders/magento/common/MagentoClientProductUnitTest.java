@@ -5,6 +5,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.leancoders.magento.client.MagentoClient;
 import de.leancoders.magento.client.helper.jackson.ObjectMapperFactory;
+import de.leancoders.magento.client.model.internal.MageConfig;
+import de.leancoders.magento.client.model.internal.ProductUpdateContext;
+import de.leancoders.magento.client.services.MageClientService;
+import de.leancoders.magento.client.services.ProductClientService;
 import de.leancoders.magento.common.model.enums.EProductStatus;
 import de.leancoders.magento.common.model.enums.EProductType;
 import de.leancoders.magento.common.model.enums.EProductVisibility;
@@ -26,7 +30,35 @@ import java.util.List;
  */
 @Log4j2
 public class MagentoClientProductUnitTest {
+
     private static final ObjectMapper OBJECT_MAPPER = ObjectMapperFactory.createDefaultObjectMapper();
+
+    @Test
+    public void test_login_admin2() {
+
+        final MageClientService clientService = new MageClientService(
+            MageConfig.of(
+                "https://main.dev.mr-hear.leancoders.de/",
+                443
+            )
+        );
+        clientService.loginAsAdmin("admin", "admin123");
+
+        final ProductClientService products = clientService.products();
+
+        final ProductPage productsPage = products.products(0, 10);
+        System.out.println("productsPage = " + productsPage);
+
+        final Product productBySKU = products.bySKU("PROD-1");
+        System.out.println("productBySKU = " + productBySKU);
+
+        productBySKU.setId(null);
+        productBySKU.setSku("PROD-2");
+        productBySKU.setName("hello");
+
+        final ProductUpdateContext productSaveContext = products.save(productBySKU);
+        System.out.println("productSaveContext = " + productSaveContext);
+    }
 
     @Test
     public void test_login_admin() throws JsonProcessingException {
@@ -109,8 +141,7 @@ public class MagentoClientProductUnitTest {
             client.products().deleteProduct(sku);
             try {
                 Thread.sleep(3000L);
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -126,7 +157,8 @@ public class MagentoClientProductUnitTest {
         product.setVisibility(EProductVisibility.VISIBILITY_BOTH);
         product.setStatus(EProductStatus.STATUS_ENABLED);
 
-        log.info("add product result: {}", OBJECT_MAPPER.writeValueAsString(client.products().saveProduct(product)));
+        final ProductUpdateContext productUpdateContext = client.products().saveProduct(product);
+        log.info("add product result: {}", productUpdateContext.getResponse());
     }
 
 

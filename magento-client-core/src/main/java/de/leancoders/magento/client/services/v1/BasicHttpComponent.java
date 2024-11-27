@@ -1,4 +1,4 @@
-package de.leancoders.magento.client.services;
+package de.leancoders.magento.client.services.v1;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;

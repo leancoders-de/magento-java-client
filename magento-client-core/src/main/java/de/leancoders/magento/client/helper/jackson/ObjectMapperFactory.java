@@ -1,16 +1,24 @@
 package de.leancoders.magento.client.helper.jackson;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
+import de.leancoders.magento.common.model.enums.EMediaType;
+import de.leancoders.magento.common.model.enums.EProductStatus;
+import de.leancoders.magento.common.model.enums.EProductType;
+import de.leancoders.magento.common.model.enums.EProductVisibility;
 
 import javax.annotation.Nonnull;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,9 +29,36 @@ public final class ObjectMapperFactory {
 
     private static final Set<Module> ENABLED_MODULES =
         ImmutableSet.of(
-            new JavaTimeModule(),
-            new GuavaModule()
+            javaTimeModule(),
+            new GuavaModule(),
+            enumModule()
         );
+
+    @Nonnull
+    private static JavaTimeModule javaTimeModule() {
+        final JavaTimeModule module = new JavaTimeModule();
+        module.addDeserializer(LocalDateTime.class, new CustomLocalDateTimeDeserializer());
+        module.addSerializer(LocalDateTime.class, new CustomLocalDateTimeSerializer());
+        return module;
+    }
+
+    @Nonnull
+    private static SimpleModule enumModule() {
+        final SimpleModule module = new SimpleModule();
+        // media type
+        module.addDeserializer(EMediaType.class, new MediaTypeDeserializer());
+        module.addSerializer(EMediaType.class, new MediaTypeSerializer());
+        // product status
+        module.addDeserializer(EProductStatus.class, new ProductStatusDeserializer());
+        module.addSerializer(EProductStatus.class, new ProductStatusSerializer());
+        // product type
+        module.addDeserializer(EProductType.class, new ProductTypeDeserializer());
+        module.addSerializer(EProductType.class, new ProductTypeSerializer());
+        // product visibility
+        module.addDeserializer(EProductVisibility.class, new ProductVisibilityDeserializer());
+        module.addSerializer(EProductVisibility.class, new ProductVisibilitySerializer());
+        return module;
+    }
 
     private ObjectMapperFactory() {
     }
