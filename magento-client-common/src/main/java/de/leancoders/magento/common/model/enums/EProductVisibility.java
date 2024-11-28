@@ -70,10 +70,10 @@ public enum EProductVisibility {
 
         if (null == item) {
             throw enumNotFoundException(key + "", EProductVisibility.class, EProductVisibility::allowedKeys);
-        } else {
+        }
+        else {
             return item;
         }
     }
-
 
 }

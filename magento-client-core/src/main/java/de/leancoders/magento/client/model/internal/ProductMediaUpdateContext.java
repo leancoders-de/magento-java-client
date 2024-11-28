@@ -1,6 +1,5 @@
 package de.leancoders.magento.client.model.internal;
 
-import de.leancoders.magento.common.model.product.ProductMedia;
 import de.leancoders.magento.common.request.ProductMediaUpdateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +10,7 @@ public class ProductMediaUpdateContext {
 
     private final ProductMediaUpdateRequest updateRequest;
 
-    private final String response;
-    private final ProductMedia productMedia;
+    private final boolean success;
+    private final Long entryId;
 
 }

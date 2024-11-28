@@ -15,6 +15,7 @@ import de.leancoders.magento.client.services.ProductMediaClientService;
 import de.leancoders.magento.client.services.v1.MagentoProductManager;
 import de.leancoders.magento.common.model.MagentoAttributeType;
 import de.leancoders.magento.common.model.enums.EMediaType;
+import de.leancoders.magento.common.model.enums.EMimeType;
 import de.leancoders.magento.common.model.enums.EProductStatus;
 import de.leancoders.magento.common.model.enums.EProductType;
 import de.leancoders.magento.common.model.enums.EProductVisibility;
@@ -39,16 +40,18 @@ import java.util.List;
 public class MagentoClientProductUnitTest {
 
     private static final ObjectMapper OBJECT_MAPPER = ObjectMapperFactory.createDefaultObjectMapper();
+    public static final String SKU = "PROD-1";
 
     @Test
     public void test_login_admin2() {
         final MageClientService clientService = new MageClientService(
             MageConfig.of(
-                "https://main.dev.mr-hear.leancoders.de/",
+                "https://design.dev.mr-hear.leancoders.de/",
                 443
             )
         );
         clientService.loginAsAdmin("admin", "admin123");
+
 
         final ProductClientService products = clientService.products();
 
@@ -70,40 +73,61 @@ public class MagentoClientProductUnitTest {
     public void test_upload() throws IOException {
         final MageClientService clientService = new MageClientService(
             MageConfig.of(
-                "https://main.dev.mr-hear.leancoders.de/",
+                "https://design.dev.mr-hear.leancoders.de/",
                 443
             )
         );
         clientService.loginAsAdmin("admin", "admin123");
 
         final ProductClientService productClientService = clientService.products();
-        final Product productBySKU = productClientService.bySKU("PROD-1");
+        final Product productBySKU = productClientService.bySKU(SKU);
         System.out.println("productBySKU = " + productBySKU);
 
         final ProductMediaClientService productMediaClientService = clientService.productMedia();
 
-        final InputStream image = MagentoClientProductUnitTest.class.getResourceAsStream("/media/images/leancoders_neg_RGB_h46.png");
-        final String fileContentBase64 = ProductMediaClientService.base64Content(image);
+        final List<ProductMedia> productMediaEntries = productBySKU.getProductMediaEntries();
+
+        productMediaEntries.forEach(item -> productMediaClientService.deleteProductMedia(SKU, item.getId()));
+
+        // productMediaClientService.deleteProductMedia(SKU);
+
+        final InputStream image1 = MagentoClientProductUnitTest.class.getResourceAsStream("/media/images/leancoders_neg_RGB_h46.png");
+        final String image1Base64Content = ProductMediaClientService.base64Content(image1);
 
         final ProductMedia productMedia = new ProductMedia();
         final ProductMediaContent content = new ProductMediaContent();
         productMedia.setDisabled(false);
-        productMedia.setFile("file");
+        // productMedia.setFile("file");
         productMedia.setLabel("label");
         productMedia.setMediaType(EMediaType.IMAGE);
         productMedia.setTypes(ImmutableList.of(EMediaType.IMAGE, EMediaType.SMALL_IMAGE, EMediaType.THUMBNAIL, EMediaType.SWATCH_IMAGE));
         productMedia.setPosition(2);
         //
-        content.setMediaType(EMediaType.IMAGE);
+        content.setEMimeType(EMimeType.PNG);
         content.setName("leancoders_neg_RGB_h46.png");
-        content.setBase64EncodedData(fileContentBase64);
+        content.setBase64EncodedData(image1Base64Content);
 
         productMedia.setContent(
             content
         );
 
-        final ProductMediaUpdateContext productMediaUpdateContext = productMediaClientService.save(productBySKU.getSku(), productMedia);
-        System.out.println("productMediaUpdateContext = " + productMediaUpdateContext);
+        final ProductMediaUpdateContext productMediaUpdateContext1 = productMediaClientService.save(SKU, productMedia);
+        System.out.println("productMediaUpdateContext1 = " + productMediaUpdateContext1);
+
+        final Long entryId = productMediaUpdateContext1.getEntryId();
+
+        // modify existing product
+        productMedia.setId(entryId);
+
+        final InputStream image2 = MagentoClientProductUnitTest.class.getResourceAsStream("/media/images/leancoders_logo_black.png");
+        final String image2Base64Content = ProductMediaClientService.base64Content(image2);
+        content.setName("leancoders_logo_black.png");
+        content.setBase64EncodedData(image2Base64Content);
+
+        final ProductMediaUpdateContext productMediaUpdateContext2 = productMediaClientService.update(SKU, productMediaUpdateContext1.getEntryId(), productMedia);
+        System.out.println("productMediaUpdateContext2 = " + productMediaUpdateContext2);
+
+
     }
 
     @Test
@@ -196,7 +220,8 @@ public class MagentoClientProductUnitTest {
             client.products().deleteProduct(sku);
             try {
                 Thread.sleep(3000L);
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }

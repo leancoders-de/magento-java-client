@@ -1,6 +1,7 @@
 package de.leancoders.magento.client.services;
 
 import de.leancoders.magento.client.model.internal.MageAuthContext;
+import de.leancoders.magento.client.model.internal.MageConfig;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
@@ -17,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 @Getter
 public abstract class BaseClientService {
 
+    protected final MageConfig config;
     protected final MageAuthContext mageAuthContext;
 
     @Nonnull

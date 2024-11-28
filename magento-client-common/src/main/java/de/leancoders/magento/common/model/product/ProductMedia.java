@@ -25,7 +25,9 @@ public class ProductMedia extends MagentoBase {
     private int position;
     @JsonProperty("disabled")
     private boolean disabled;
-    @JsonProperty("file")
+
+    // relative file path of magento; e.g. /f/i/file-sku.png
+    @JsonProperty(value = "file", access = JsonProperty.Access.READ_ONLY)
     private String file;
 
     @JsonProperty("content")

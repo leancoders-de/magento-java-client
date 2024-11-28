@@ -6,28 +6,20 @@ import de.leancoders.magento.client.model.internal.ProductUpdateContext;
 import de.leancoders.magento.common.model.product.Product;
 import de.leancoders.magento.common.model.search.ProductPage;
 import de.leancoders.magento.common.request.ProductUpdateRequest;
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.specification.RequestSpecification;
 import lombok.NonNull;
 
 import javax.annotation.Nonnull;
-
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 import static de.leancoders.magento.client.services.MagePaths.PRODUCTS_V1_BY_SKU;
 import static de.leancoders.magento.client.services.MagePaths.PRODUCTS_V1_PAGE;
 
 public class ProductClientService extends BaseClientService {
 
-    private final MageConfig config;
-
     @Nonnull
     public ProductClientService(@Nonnull final MageConfig config,
                                 @NonNull final MageAuthContext mageAuthContext) {
-        super(mageAuthContext);
-        this.config = config;
+        super(config, mageAuthContext);
     }
 
     @Nonnull

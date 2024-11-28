@@ -1,6 +1,5 @@
 package de.leancoders.magento.client.helper.jackson;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.Module;
@@ -13,12 +12,12 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import de.leancoders.magento.common.model.enums.EBackendType;
 import de.leancoders.magento.common.model.enums.EMediaType;
+import de.leancoders.magento.common.model.enums.EMimeType;
 import de.leancoders.magento.common.model.enums.EProductStatus;
 import de.leancoders.magento.common.model.enums.EProductType;
 import de.leancoders.magento.common.model.enums.EProductVisibility;
 
 import javax.annotation.Nonnull;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
@@ -46,9 +45,12 @@ public final class ObjectMapperFactory {
     @Nonnull
     private static SimpleModule enumModule() {
         final SimpleModule module = new SimpleModule();
-        // media type
+        // backend type
         module.addDeserializer(EBackendType.class, new BackendTypeDeserializer());
         module.addSerializer(EBackendType.class, new BackendTypeSerializer());
+        // custom mime type
+        module.addDeserializer(EMimeType.class, new MimeTypeDeserializer());
+        module.addSerializer(EMimeType.class, new MimeTypeSerializer());
         // media type
         module.addDeserializer(EMediaType.class, new MediaTypeDeserializer());
         module.addSerializer(EMediaType.class, new MediaTypeSerializer());
