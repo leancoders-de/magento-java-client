@@ -5,6 +5,7 @@ import de.leancoders.magento.client.model.internal.MageConfig;
 import de.leancoders.magento.client.model.internal.ProductUpdateContext;
 import de.leancoders.magento.common.model.product.Product;
 import de.leancoders.magento.common.model.search.ProductPage;
+import de.leancoders.magento.common.request.ProductStockUpdateRequest;
 import de.leancoders.magento.common.request.ProductUpdateRequest;
 import io.restassured.http.ContentType;
 import lombok.NonNull;
@@ -12,6 +13,7 @@ import lombok.NonNull;
 import javax.annotation.Nonnull;
 
 import static de.leancoders.magento.client.services.MagePaths.PRODUCTS_V1_BY_SKU;
+import static de.leancoders.magento.client.services.MagePaths.PRODUCTS_V1_BY_SKU_STOCK_ITEMS_BY_ID;
 import static de.leancoders.magento.client.services.MagePaths.PRODUCTS_V1_PAGE;
 
 public class ProductClientService extends BaseClientService {
@@ -70,6 +72,26 @@ public class ProductClientService extends BaseClientService {
                 .as(Product.class);
 
         return ProductUpdateContext.of(productUpdateRequest, sku, productResponse);
+    }
+
+    @Nonnull
+    public Integer save(@NonNull final String sku,
+                        @NonNull final Integer stockId,
+                        @Nonnull final ProductStockUpdateRequest stockUpdateRequest) {
+
+        final Integer response =
+            request()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(stockUpdateRequest)
+                .log().all()
+                .expect().statusCode(200)
+                .log().all()
+                .when()
+                .put(PRODUCTS_V1_BY_SKU_STOCK_ITEMS_BY_ID, encode(sku), stockId)
+                .as(Integer.class);
+
+        return response;
     }
 
 }
