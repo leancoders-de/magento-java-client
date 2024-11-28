@@ -33,6 +33,7 @@ public class ProductMediaClientService extends BaseClientService {
     public ProductMediaList getBySku(@NonNull final String sku) {
 
         return request()
+            .log().all()
             .expect().statusCode(200)
             .log().all()
             .when()
@@ -46,6 +47,7 @@ public class ProductMediaClientService extends BaseClientService {
                                       final long mediaId) {
 
         return request()
+            .log().all()
             .expect().statusCode(200)
             .log().all()
             .when()
@@ -57,6 +59,7 @@ public class ProductMediaClientService extends BaseClientService {
                                       final long mediaId) {
 
         return request()
+            .log().all()
             .expect().statusCode(200)
             .log().all()
             .when()
@@ -123,6 +126,7 @@ public class ProductMediaClientService extends BaseClientService {
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body(updateRequest)
+                .log().all()
                 .expect().statusCode(200)
                 .log().all()
                 .when()

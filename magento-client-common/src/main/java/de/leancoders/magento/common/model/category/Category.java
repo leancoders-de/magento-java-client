@@ -2,16 +2,16 @@ package de.leancoders.magento.common.model.category;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.leancoders.magento.common.model.base.MagentoBase;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
 /**
  *
  */
-@Setter
-@Getter
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class Category extends MagentoBase {
 
     @JsonProperty("parent_id")
@@ -22,7 +22,7 @@ public class Category extends MagentoBase {
     private boolean isActive;
     @JsonProperty("position")
     private int position;
-    @JsonProperty("position")
+    @JsonProperty("level")
     private int level;
     @JsonProperty("product_count")
     private int productCount;

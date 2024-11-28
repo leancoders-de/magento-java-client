@@ -29,6 +29,7 @@ public class ProductClientService extends BaseClientService {
         return request()
             .queryParam("searchCriteria[currentPage]", currentPage)
             .queryParam("searchCriteria[pageSize]", pageSize)
+            .log().all()
             .expect().statusCode(200)
             .log().all()
             .when()
@@ -40,6 +41,7 @@ public class ProductClientService extends BaseClientService {
     public Product bySKU(@Nonnull final String sku) {
 
         return request()
+            .log().all()
             .expect().statusCode(200)
             .log().all()
             .when()
@@ -60,6 +62,7 @@ public class ProductClientService extends BaseClientService {
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body(productUpdateRequest)
+                .log().all()
                 .expect().statusCode(200)
                 .log().all()
                 .when()

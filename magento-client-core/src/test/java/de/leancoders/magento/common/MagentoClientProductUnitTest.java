@@ -14,6 +14,7 @@ import de.leancoders.magento.client.services.ProductClientService;
 import de.leancoders.magento.client.services.ProductMediaClientService;
 import de.leancoders.magento.client.services.v1.MagentoProductManager;
 import de.leancoders.magento.common.model.MagentoAttributeType;
+import de.leancoders.magento.common.model.category.Category;
 import de.leancoders.magento.common.model.enums.EMediaType;
 import de.leancoders.magento.common.model.enums.EMimeType;
 import de.leancoders.magento.common.model.enums.EProductStatus;
@@ -60,13 +61,23 @@ public class MagentoClientProductUnitTest {
 
         final Product productBySKU = products.bySKU("PROD-1");
         System.out.println("productBySKU = " + productBySKU);
+    }
 
-        productBySKU.setId(null);
-        productBySKU.setSku("PROD-2");
-        productBySKU.setName("hello");
+    @Test
+    public void test_categories() {
+        final MageClientService clientService = new MageClientService(
+            MageConfig.of(
+                "https://design.dev.mr-hear.leancoders.de/",
+                443
+            )
+        );
+        clientService.loginAsAdmin("admin", "admin123");
 
-        final ProductUpdateContext productSaveContext = products.save(productBySKU);
-        System.out.println("productSaveContext = " + productSaveContext);
+
+        final Category category = clientService.categories().categories(0, 100);
+
+        System.out.println("category = " + category);
+
     }
 
     @Test

@@ -48,6 +48,11 @@ public class MageClientService {
     }
 
     @Nonnull
+    public CategoryClientService categories() {
+        return new CategoryClientService(config, mageAuthContext);
+    }
+
+    @Nonnull
     public ProductClientService products() {
         return new ProductClientService(config, mageAuthContext);
     }
@@ -71,6 +76,7 @@ public class MageClientService {
             .accept(ContentType.JSON)
             .contentType(ContentType.JSON)
             .body(userLoginRequest)
+            .log().all()
             .expect().statusCode(200)
             .log().all()
             .when()
