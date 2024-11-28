@@ -3,23 +3,31 @@ package de.leancoders.magento.common;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableList;
 import de.leancoders.magento.client.MagentoClient;
 import de.leancoders.magento.client.helper.jackson.ObjectMapperFactory;
 import de.leancoders.magento.client.model.internal.MageConfig;
+import de.leancoders.magento.client.model.internal.ProductMediaUpdateContext;
 import de.leancoders.magento.client.model.internal.ProductUpdateContext;
 import de.leancoders.magento.client.services.MageClientService;
 import de.leancoders.magento.client.services.ProductClientService;
+import de.leancoders.magento.client.services.ProductMediaClientService;
 import de.leancoders.magento.client.services.v1.MagentoProductManager;
 import de.leancoders.magento.common.model.MagentoAttributeType;
+import de.leancoders.magento.common.model.enums.EMediaType;
 import de.leancoders.magento.common.model.enums.EProductStatus;
 import de.leancoders.magento.common.model.enums.EProductType;
 import de.leancoders.magento.common.model.enums.EProductVisibility;
 import de.leancoders.magento.common.model.product.Product;
+import de.leancoders.magento.common.model.product.ProductMedia;
+import de.leancoders.magento.common.model.product.ProductMediaContent;
 import de.leancoders.magento.common.model.search.ProductAttributePage;
 import de.leancoders.magento.common.model.search.ProductPage;
 import lombok.extern.log4j.Log4j2;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -56,6 +64,46 @@ public class MagentoClientProductUnitTest {
 
         final ProductUpdateContext productSaveContext = products.save(productBySKU);
         System.out.println("productSaveContext = " + productSaveContext);
+    }
+
+    @Test
+    public void test_upload() throws IOException {
+        final MageClientService clientService = new MageClientService(
+            MageConfig.of(
+                "https://main.dev.mr-hear.leancoders.de/",
+                443
+            )
+        );
+        clientService.loginAsAdmin("admin", "admin123");
+
+        final ProductClientService productClientService = clientService.products();
+        final Product productBySKU = productClientService.bySKU("PROD-1");
+        System.out.println("productBySKU = " + productBySKU);
+
+        final ProductMediaClientService productMediaClientService = clientService.productMedia();
+
+        final InputStream image = MagentoClientProductUnitTest.class.getResourceAsStream("/media/images/leancoders_neg_RGB_h46.png");
+        final String fileContentBase64 = ProductMediaClientService.base64Content(image);
+
+        final ProductMedia productMedia = new ProductMedia();
+        final ProductMediaContent content = new ProductMediaContent();
+        productMedia.setDisabled(false);
+        productMedia.setFile("file");
+        productMedia.setLabel("label");
+        productMedia.setMediaType(EMediaType.IMAGE);
+        productMedia.setTypes(ImmutableList.of(EMediaType.IMAGE, EMediaType.SMALL_IMAGE, EMediaType.THUMBNAIL, EMediaType.SWATCH_IMAGE));
+        productMedia.setPosition(2);
+        //
+        content.setMediaType(EMediaType.IMAGE);
+        content.setName("leancoders_neg_RGB_h46.png");
+        content.setBase64EncodedData(fileContentBase64);
+
+        productMedia.setContent(
+            content
+        );
+
+        final ProductMediaUpdateContext productMediaUpdateContext = productMediaClientService.save(productBySKU.getSku(), productMedia);
+        System.out.println("productMediaUpdateContext = " + productMediaUpdateContext);
     }
 
     @Test
@@ -165,7 +213,7 @@ public class MagentoClientProductUnitTest {
         product.setStatus(EProductStatus.STATUS_ENABLED);
 
         final ProductUpdateContext productUpdateContext = client.products().saveProduct(product);
-        log.info("add product result: {}", productUpdateContext.getResponse());
+        log.info("add product result: {}", productUpdateContext.getSku());
     }
 
 

@@ -7,6 +7,9 @@ public interface MagePaths {
     String CARTS_V1 = "/rest/V1/carts/";
     String PRODUCTS_V1_BY_SKU = "/rest/V1/products/{sku}/";
 
+    String PRODUCTS_V1_BY_SKU_MEDIA = PRODUCTS_V1_BY_SKU + "media/";
+    String PRODUCTS_V1_BY_SKU_MEDIA_BY_ID = PRODUCTS_V1_BY_SKU_MEDIA + "{mediaId}/";
+
     String CUSTOMER_AUTH_V1 = "/rest/V1/integration/customer/token/";
     String ADMIN_AUTH_V1 = "/rest/V1/integration/admin/token/";
 

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
+import de.leancoders.magento.common.model.enums.EBackendType;
 import de.leancoders.magento.common.model.enums.EMediaType;
 import de.leancoders.magento.common.model.enums.EProductStatus;
 import de.leancoders.magento.common.model.enums.EProductType;
@@ -45,6 +46,9 @@ public final class ObjectMapperFactory {
     @Nonnull
     private static SimpleModule enumModule() {
         final SimpleModule module = new SimpleModule();
+        // media type
+        module.addDeserializer(EBackendType.class, new BackendTypeDeserializer());
+        module.addSerializer(EBackendType.class, new BackendTypeSerializer());
         // media type
         module.addDeserializer(EMediaType.class, new MediaTypeDeserializer());
         module.addSerializer(EMediaType.class, new MediaTypeSerializer());

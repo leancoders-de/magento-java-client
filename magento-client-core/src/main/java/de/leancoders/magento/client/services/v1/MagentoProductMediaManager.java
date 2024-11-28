@@ -59,11 +59,9 @@ public class MagentoProductMediaManager extends MagentoHttpComponent {
         try {
             String base64EncodedData = new String(Base64.encodeBase64(imageBytes), "UTF-8");
             return uploadProductImage(sku, position, filename, base64EncodedData, imageType, imageFileName);
-        }
-        catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException e) {
             log.error("Failed to covert image bytes to base64 string", e);
-        }
-        catch (JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
         return -1L;
@@ -75,25 +73,24 @@ public class MagentoProductMediaManager extends MagentoHttpComponent {
         try {
             String base64EncodedData = new String(Base64.encodeBase64(imageBytes), "UTF-8");
             return updateProductImage(sku, entryId, position, filename, base64EncodedData, imageType, imageFileName);
-        }
-        catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException e) {
             log.error("Failed to covert image bytes to base64 string", e);
-        }
-        catch (JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
         return false;
     }
 
 
+    @Deprecated
     public boolean updateProductImage(String sku, long entryId, int position, String filename, String base64EncodedData, String imageType, String imageFileName) throws JsonProcessingException {
         final String uri = baseUri() + PRODUCTS_V1 + encode(sku) + "/media/" + entryId;
 
         final Map<String, Object> req = new HashMap<>();
         final Map<String, Object> entry = new HashMap<>();
 
-        entry.put("media_type", "image");
         entry.put("id", entryId);
+        entry.put("media_type", "image");
         entry.put("label", "Image");
         entry.put("position", position);
         entry.put("disabled", false);
@@ -170,6 +167,7 @@ public class MagentoProductMediaManager extends MagentoHttpComponent {
     }
 
 
+    @Deprecated
     @Nonnull
     public ProductMedia getProductMedia(@NonNull final String sku, final long entryId) throws JsonProcessingException {
 
@@ -185,6 +183,7 @@ public class MagentoProductMediaManager extends MagentoHttpComponent {
     }
 
 
+    @Deprecated
     public boolean deleteProductMedia(String sku, long entryId) {
 
         final String uri = baseUri() + PRODUCTS_V1 + encode(sku) + "/media/" + entryId;
@@ -199,13 +198,14 @@ public class MagentoProductMediaManager extends MagentoHttpComponent {
     }
 
 
+    @Deprecated
     public String getProductMediaAbsoluteUrl(@NonNull final String sku, final long entryId) throws JsonProcessingException {
         final ProductMedia media = getProductMedia(sku, entryId);
         final String filename = media.getFile();
         return baseUri() + "/pub/media/catalog/product/" + filename;
     }
 
-
+    @Deprecated
     public String getProductMediaRelativeUrl(@NonNull final String sku, final long entryId) throws JsonProcessingException {
         ProductMedia media = getProductMedia(sku, entryId);
         String filename = media.getFile();
@@ -249,8 +249,7 @@ public class MagentoProductMediaManager extends MagentoHttpComponent {
             for (int k = 0; k < mediaList.size(); ++k) {
                 deleteProductMedia(sku, mediaList.get(k).getId());
             }
-        }
-        else {
+        } else {
             if (mediaList.size() > 0) {
                 return -1;
             }
@@ -278,8 +277,7 @@ public class MagentoProductMediaManager extends MagentoHttpComponent {
             log.info("uploaded {} for product {}: {}", imageFilePath, sku, uploadedId);
 
             return uploadedId;
-        }
-        catch (IOException exception) {
+        } catch (IOException exception) {
             log.error("Failed to upload as image " + imageFilePath + " is not available.", exception);
         }
 
@@ -296,8 +294,7 @@ public class MagentoProductMediaManager extends MagentoHttpComponent {
             for (int k = 0; k < mediaList.size(); ++k) {
                 deleteProductMedia(sku, mediaList.get(k).getId());
             }
-        }
-        else {
+        } else {
             if (mediaList.size() > 0) {
                 return -1;
             }
@@ -341,8 +338,7 @@ public class MagentoProductMediaManager extends MagentoHttpComponent {
             log.info("updating {} for product {}: {}", imageFilePath, sku, updated);
 
             return updated;
-        }
-        catch (IOException exception) {
+        } catch (IOException exception) {
             log.error("Failed to upload as image " + imageFilePath + " is not available.", exception);
         }
 

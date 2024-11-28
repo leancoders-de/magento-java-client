@@ -53,6 +53,11 @@ public class MageClientService {
     }
 
     @Nonnull
+    public ProductMediaClientService productMedia() {
+        return new ProductMediaClientService(config, mageAuthContext);
+    }
+
+    @Nonnull
     protected String obtainAccessToken(@NonNull final String username,
                                        @NonNull final String password,
                                        @NonNull final String path) {
