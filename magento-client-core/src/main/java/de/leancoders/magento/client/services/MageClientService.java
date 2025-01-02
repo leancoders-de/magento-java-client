@@ -53,6 +53,11 @@ public class MageClientService {
     }
 
     @Nonnull
+    public CustomerClientService customers() {
+        return new CustomerClientService(config, mageAuthContext);
+    }
+
+    @Nonnull
     public ProductClientService products() {
         return new ProductClientService(config, mageAuthContext);
     }

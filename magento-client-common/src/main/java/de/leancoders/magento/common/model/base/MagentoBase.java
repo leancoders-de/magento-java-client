@@ -15,4 +15,5 @@ public class MagentoBase {
     @JsonProperty("updated_at")
     private LocalDateTime updatedAt;
 
+    // created_in:String
 }

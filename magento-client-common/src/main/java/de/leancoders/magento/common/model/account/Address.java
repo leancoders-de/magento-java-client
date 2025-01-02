@@ -17,11 +17,10 @@ import java.util.List;
 public class Address extends MagentoBase {
 
     @JsonProperty("region")
-    private String region;
+    private Region region;
     @JsonProperty("region_id")
     private String regionId;
-    @JsonProperty("region_code")
-    private String regionCode;
+
     @JsonProperty("country_id")
     private String countryId;
 

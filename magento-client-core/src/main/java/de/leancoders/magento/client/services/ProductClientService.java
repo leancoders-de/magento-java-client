@@ -18,7 +18,6 @@ import static de.leancoders.magento.client.services.MagePaths.PRODUCTS_V1_PAGE;
 
 public class ProductClientService extends BaseClientService {
 
-    @Nonnull
     public ProductClientService(@Nonnull final MageConfig config,
                                 @NonNull final MageAuthContext mageAuthContext) {
         super(config, mageAuthContext);

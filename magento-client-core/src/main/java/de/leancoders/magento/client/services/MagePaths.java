@@ -5,6 +5,9 @@ public interface MagePaths {
     String CATEGORIES_V1 = "/rest/V1/categories/";
     String CATEGORIES_V1_PRODUCT_ASSIGN = CATEGORIES_V1 + "{categoryId}/products/";
 
+    String CUSTOMERS_V1 = "/rest/V1/customers/";
+    String CUSTOMERS_V1_SEARCH = CUSTOMERS_V1 + "search/";
+
     String PRODUCTS_V1 = "/rest/V1/products/";
     String PRODUCTS_V1_PAGE = "/rest/V1/products/";
     String CARTS_V1 = "/rest/V1/carts/";
