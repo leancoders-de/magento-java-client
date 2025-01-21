@@ -2,6 +2,11 @@ package de.leancoders.magento.client.services;
 
 public interface MagePaths {
 
+    String ATTRIBUTES_V1 = "rest/V1/products/attribute-sets/";
+    String ATTRIBUTES_V1_SEARCH = ATTRIBUTES_V1 + "sets/list/";
+    String ATTRIBUTES_V1_BY_ID = ATTRIBUTES_V1 + "{attributeSetId}/";
+    String ATTRIBUTES_V1_BY_ID_ATTRIBUTES = ATTRIBUTES_V1_BY_ID + "attributes/";
+
     String CATEGORIES_V1 = "/rest/V1/categories/";
     String CATEGORIES_V1_PRODUCT_ASSIGN = CATEGORIES_V1 + "{categoryId}/products/";
 

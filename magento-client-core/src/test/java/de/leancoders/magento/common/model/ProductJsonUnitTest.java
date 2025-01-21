@@ -6,7 +6,7 @@ import de.leancoders.magento.client.helper.jackson.ObjectMapperFactory;
 import de.leancoders.magento.common.model.product.MagentoAttribute;
 import de.leancoders.magento.common.model.product.Product;
 import lombok.extern.log4j.Log4j2;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,7 +41,8 @@ public class ProductJsonUnitTest {
             while ((line = reader.readLine()) != null) {
                 sb.append(line);
             }
-        } catch (IOException ioex) {
+        }
+        catch (IOException ioex) {
             log.error("Failed to read stream", ioex);
         }
         return sb.toString();

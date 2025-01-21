@@ -1,9 +1,8 @@
 package de.leancoders.magento.common.model.search;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 
 /**
@@ -11,7 +10,10 @@ import lombok.Setter;
  */
 @Data
 public class FilterGroup {
+    @JsonProperty("name")
     private String name;
+    @JsonProperty("value")
     private String value;
-    private String condition_type;
+    @JsonProperty("condition_type")
+    private String conditionType;
 }

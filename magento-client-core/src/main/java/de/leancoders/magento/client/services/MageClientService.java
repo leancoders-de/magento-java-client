@@ -48,6 +48,11 @@ public class MageClientService {
     }
 
     @Nonnull
+    public AttributeSetClientService attributeSets() {
+        return new AttributeSetClientService(config, mageAuthContext);
+    }
+
+    @Nonnull
     public CategoryClientService categories() {
         return new CategoryClientService(config, mageAuthContext);
     }

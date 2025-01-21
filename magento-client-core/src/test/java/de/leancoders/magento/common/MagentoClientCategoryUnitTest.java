@@ -8,7 +8,7 @@ import de.leancoders.magento.client.helper.jackson.ObjectMapperFactory;
 import de.leancoders.magento.common.model.category.Category;
 import de.leancoders.magento.common.model.category.CategoryProduct;
 import lombok.extern.log4j.Log4j2;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 

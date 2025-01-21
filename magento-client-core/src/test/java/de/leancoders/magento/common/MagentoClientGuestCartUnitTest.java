@@ -9,7 +9,7 @@ import de.leancoders.magento.common.model.cart.Cart;
 import de.leancoders.magento.common.model.cart.CartItem;
 import de.leancoders.magento.common.model.cart.CartTotal;
 import lombok.extern.log4j.Log4j2;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 
 /**

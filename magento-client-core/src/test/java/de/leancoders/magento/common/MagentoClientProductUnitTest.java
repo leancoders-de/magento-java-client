@@ -27,7 +27,7 @@ import de.leancoders.magento.common.model.search.CustomerPage;
 import de.leancoders.magento.common.model.search.ProductAttributePage;
 import de.leancoders.magento.common.model.search.ProductPage;
 import lombok.extern.log4j.Log4j2;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -251,7 +251,8 @@ public class MagentoClientProductUnitTest {
             client.products().deleteProduct(sku);
             try {
                 Thread.sleep(3000L);
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }

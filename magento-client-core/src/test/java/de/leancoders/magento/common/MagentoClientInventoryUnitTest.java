@@ -7,7 +7,7 @@ import de.leancoders.magento.client.MagentoClient;
 import de.leancoders.magento.client.helper.jackson.ObjectMapperFactory;
 import de.leancoders.magento.common.model.stock.StockItems;
 import lombok.extern.log4j.Log4j2;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 
 /**

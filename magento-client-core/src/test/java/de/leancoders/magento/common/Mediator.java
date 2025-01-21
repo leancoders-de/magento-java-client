@@ -52,4 +52,14 @@ public class Mediator {
             password
         );
     }
+
+    @NonNull
+    public static Mediator stage(@NonNull final String username,
+                                  @NonNull final String password) {
+        return new Mediator(
+            "https://staging.mr-hear.leancoders.de",
+            username,
+            password
+        );
+    }
 }
