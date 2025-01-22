@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -92,10 +93,11 @@ public class MagentoClientProductUnitTest {
         );
         clientService.loginAsAdmin("admin", "admin123");
 
-
         final CustomerPage customers =
             clientService.customers()
-                .customers(0, 100, LocalDate.of(2000, 1, 1));
+                .customers(0, 100, LocalDate.of(2000, 1, 1).atStartOfDay());
+
+
 
         System.out.println("customers = " + customers);
     }
@@ -251,8 +253,7 @@ public class MagentoClientProductUnitTest {
             client.products().deleteProduct(sku);
             try {
                 Thread.sleep(3000L);
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
