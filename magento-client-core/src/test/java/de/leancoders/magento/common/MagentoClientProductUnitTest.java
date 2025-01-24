@@ -50,11 +50,11 @@ public class MagentoClientProductUnitTest {
     public void test_login_admin2() {
         final MageClientService clientService = new MageClientService(
             MageConfig.of(
-                "https://design.dev.mr-hear.leancoders.de/",
+                "https://staging.mr-hear.leancoders.de/",
                 443
             )
         );
-        clientService.loginAsAdmin("admin", "admin123");
+        clientService.loginAsAdmin("ralf", "admin12345");
 
 
         final ProductClientService products = clientService.products();

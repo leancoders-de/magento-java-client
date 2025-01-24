@@ -11,6 +11,7 @@ import io.restassured.http.ContentType;
 import lombok.NonNull;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class MageClientService {
 
@@ -98,4 +99,8 @@ public class MageClientService {
         return token;
     }
 
+    @Nullable
+    public MageAuthContext mageAuthContext() {
+        return mageAuthContext;
+    }
 }
