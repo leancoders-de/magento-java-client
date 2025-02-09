@@ -98,7 +98,6 @@ public class MagentoClientProductUnitTest {
                 .customers(0, 100, LocalDate.of(2000, 1, 1).atStartOfDay());
 
 
-
         System.out.println("customers = " + customers);
     }
 
@@ -184,6 +183,21 @@ public class MagentoClientProductUnitTest {
     @Test
     public void test_list_product() throws JsonProcessingException {
         final Mediator mediator = Mediator.localAdmin();
+        final MagentoClient client = new MagentoClient(mediator.getUrl());
+        final String token = client.loginAsAdmin(mediator.getUsername(), mediator.getPassword());
+        log.info("account with id = 1: {}", client.getAccountById(1));
+        log.info("product types: \r\n{}", OBJECT_MAPPER.writeValueAsString(client.products().listProductTypes()));
+
+        ProductPage page = client.products().page(0, 10);
+        log.info("product page: \r\n{}", OBJECT_MAPPER.writeValueAsString(page));
+        Product p1 = page.getItems().get(0);
+        Product p2 = client.products().getProductBySku(p1.getSku());
+        log.info("product:\r\n{}", OBJECT_MAPPER.writeValueAsString(p2));
+    }
+
+    @Test
+    public void test_list_product2() throws JsonProcessingException {
+        final Mediator mediator = Mediator.stage("ralf", "admin12345");
         final MagentoClient client = new MagentoClient(mediator.getUrl());
         final String token = client.loginAsAdmin(mediator.getUsername(), mediator.getPassword());
         log.info("account with id = 1: {}", client.getAccountById(1));

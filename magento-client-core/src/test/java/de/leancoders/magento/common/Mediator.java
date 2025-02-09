@@ -57,7 +57,7 @@ public class Mediator {
     public static Mediator stage(@NonNull final String username,
                                   @NonNull final String password) {
         return new Mediator(
-            "https://staging.mr-hear.leancoders.de",
+            "https://staging.mr-hear.leancoders.de/",
             username,
             password
         );
